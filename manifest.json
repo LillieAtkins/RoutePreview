@@ -1,11 +1,36 @@
 {
   "name":"course_preview",
   "version":"1.0",
+  "description": "Displays a video of the route created",
   "manifest_version":2,
+  "permissions": [ "declarativeContent", "tabs", "activeTab", "storage"],
+  "web_accessible_resources": [
+    "icons/*.png",
+    "popup.html"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent":true
+  },
   "content_scripts":[
     {
-      "matches":["https://stackoverflow.com/"],
-      "js":["content.js"]
+      "matches":["https://www.strava.com/routes/new"],
+      "js":["content.js"],
+      "run_at": "document_end"
     }
-  ]
+  ],
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/course_preview_icon.png",
+      "24": "icons/course_preview_icon.png",
+      "32": "icons/course_preview_icon.png"
+    },
+    "default_title":"Course Preview"
+  },
+  "icons":{
+    "16": "icons/course_preview_icon.png",
+    "24": "icons/course_preview_icon.png",
+    "32": "icons/course_preview_icon.png"
+  }
 }
