@@ -1,0 +1,23 @@
+button {
+  outline: none;
+}
+
+body{
+  background-color: #0F0E0E;
+}
+
+#expand_link {
+    text-align: right;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+#course_preview_popup {
+  position: relative;
+  z-index: 3;
+}
