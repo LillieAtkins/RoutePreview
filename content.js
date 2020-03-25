@@ -23,7 +23,6 @@ try {
 
   //Action that takes place when we click the Course Preview Button
   btn.addEventListener("click", function(){
-    console.log('creating');
     //Displays our Popup from the popup.html file
     var popup_area = document.getElementById("map-canvas");
     var surround_div = document.createElement("div");
@@ -32,12 +31,23 @@ try {
     object.data = chrome.runtime.getURL("popup.html");
     object.height = 350;
     object.width = 400;
+
     //Puts the object in the div
     surround_div.appendChild(object);
     surround_div.style.position = "absolute";
-    surround_div.style.zindex = 2;
-    popup_area.appendChild(surround_div);
-    
+    surround_div.style.zIndex = 9000;
+    surround_div.style.textAlign = 'center';
+    surround_div.style.width = '100%';
+    surround_div.style.height = '100%';
+    surround_div.style.background = 'rgba(255,255,255,.6)';
+    surround_div.style.display = 'inline-block';
+    surround_div.style.paddingTop= '5%';
+    document.body.appendChild(surround_div);
+
+    //Hide the header when popup is enabled
+    var strava_header = document.getElementsByTagName('header');
+    strava_header[0].style.opacity = .6;
+
     //Start for functionality of our project
     displayPreview();
   })
