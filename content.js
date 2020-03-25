@@ -31,7 +31,6 @@ try {
     object.data = chrome.runtime.getURL("popup.html");
     object.height = 350;
     object.width = 400;
-
     //Puts the object in the div
     surround_div.appendChild(object);
     surround_div.style.position = "absolute";
@@ -41,6 +40,7 @@ try {
     surround_div.style.height = '100%';
     surround_div.style.background = 'rgba(255,255,255,.6)';
     surround_div.style.display = 'inline-block';
+    //Vertically center the popup
     surround_div.style.paddingTop= '5%';
     document.body.appendChild(surround_div);
 
