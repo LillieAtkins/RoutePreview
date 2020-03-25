@@ -50,6 +50,7 @@ try {
 
     //Start for functionality of our project
     displayPreview();
+    
   })
 
   function displayPreview(){
