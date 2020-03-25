@@ -4,6 +4,8 @@ button {
 
 body{
   background-color: #0F0E0E;
+  text-align: center;
+  z-index: 900;
 }
 
 #expand_link {
@@ -19,5 +21,5 @@ a {
 
 #course_preview_popup {
   position: relative;
-  z-index: 3;
+  z-index: 900;
 }
