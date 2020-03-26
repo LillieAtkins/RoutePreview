@@ -28,7 +28,7 @@ try {
     var surround_div = document.createElement("div");
     //Object holds/displays the popup.html code
     var object = document.createElement("object");
-    object.data = chrome.runtime.getURL("popup.html");
+    object.data = chrome.runtime.getURL("popup.html"); 
     object.height = 350;
     object.width = 400;
     //Puts the object in the div

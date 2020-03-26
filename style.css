@@ -23,3 +23,32 @@ a {
   position: relative;
   z-index: 900;
 }
+
+/* #slides{
+	position: relative;
+	height: 150px;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.slide{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	z-index: 1;
+
+	-webkit-transition: opacity 1s;
+	-moz-transition: opacity 1s;
+	-o-transition: opacity 1s;
+	transition: opacity 1s;
+}
+
+.showing{
+	opacity: 1;
+	z-index: 2;
+  display: block;
+} */

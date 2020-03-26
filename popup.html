@@ -16,9 +16,43 @@
     <div id="expand_link">
       <a href="https://www.google.com">Expand Icon</a>
     </div>
-    <div id="static_preview_image">
-      <image src="icons/preview_image.png"/>
+    <div class="slideshow-container">
+      <div class="mySlides fade">
+        <img src="picture1.png" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="picture2.png" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="picture3.png" style="width:100%">
+      </div>
     </div>
+    <script src="playSlideshow.js"></script>
+    <!-- <ul id="slides">
+    	<div class="slide showing">
+        <img src="picture1.png" style="width:100%">
+      </div>
+    	<div class="slide">
+        <img src="picture2.png" style="width:100%">
+      </div>
+      <div class="slide">
+        <img src="picture3.png" style="width:100%">
+      </div>
+    </ul> -->
+    <button class="controls" id="pause">Pause</button>
   </div>
 </body>
 </html>
+
+<!-- function playPause() {
+var mediaPlayer = document.getElementById('media-video');
+if (mediaPlayer.paused) {
+  mediaPlayer.play();
+  $('.pause-btn').show();
+  $('.play-btn').hide();
+} else {
+  mediaPlayer.pause();
+  $('.play-btn').show();
+  $('.pause-btn').hide();
+}
+} -->
