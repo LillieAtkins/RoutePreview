@@ -138,7 +138,6 @@ try {
   function getLatandLog(){
     //code here
     //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
-    return []
   }
 
   //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
