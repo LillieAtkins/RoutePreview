@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
 document.addEventListener('DOMContentLoaded', function () {
 
     var slideIndex = 0;
@@ -16,10 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
         slides[i].style.display = "none";
       }
       slideIndex++;
-<<<<<<< HEAD
-=======
-
->>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
       }
@@ -49,10 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
     var resetButton = document.getElementById("reset");
 
     resetButton.onclick = function(){
@@ -62,8 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var nextButton = document.getElementById("forward");
 
     nextButton.onclick = function(){
-      document.getElementById("pause-icon").className = "fa fa-play"; //make sure icon is play as the video is paused
-      clearInterval(slideInterval); //keep slideshow paused if person starts clicking through pictures
+      pauseSlideshow();
       console.log('next button called');
       if(slideIndex < slides.length) {
         slideIndex = slideIndex + 1;
@@ -77,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var prevButton = document.getElementById("backward");
 
     prevButton.onclick = function(){
-      document.getElementById("pause-icon").className = "fa fa-play";
-      clearInterval(slideInterval);
+      pauseSlideshow();
       console.log('prev button called');
       if(slideIndex > 1) {
         slideIndex = slideIndex - 1;
