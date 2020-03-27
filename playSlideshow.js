@@ -20,8 +20,6 @@
     //   setTimeout(showSlides, 2000); // Change image every 2 seconds
     // }
 
-    console.log(document.body);
-
     var slides = document.querySelectorAll('#slides .slide');
     var currentSlide = 0;
     var slideInterval = setInterval(nextSlide,2000);
