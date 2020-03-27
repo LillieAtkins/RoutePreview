@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    function showSlide(){
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+
+      if(slideIndex <= slides.length) {
+        slides[slideIndex-1].style.display = "block";
+      }
+    }
+
     var playing = true;
     var pauseButton = document.getElementById("pause");
 
@@ -39,25 +49,31 @@ document.addEventListener('DOMContentLoaded', function () {
     var nextButton = document.getElementById("forward");
 
     nextButton.onclick = function(){
+      document.getElementById("pause-icon").className = "fa fa-play"; //make sure icon is play as the video is paused
+      clearInterval(slideInterval); //keep slideshow paused if person starts clicking through pictures
       console.log('next button called');
-      if(slideIndex <= slides.length) {
+      if(slideIndex < slides.length) {
         slideIndex = slideIndex + 1;
       } else {
-        slideIndex = 0;
+        slideIndex = 1;
       }
       console.log(slideIndex);
+      showSlide(slideIndex);
     };
 
     var prevButton = document.getElementById("backward");
 
     prevButton.onclick = function(){
+      document.getElementById("pause-icon").className = "fa fa-play";
+      clearInterval(slideInterval);
       console.log('prev button called');
-      if(slideIndex >= 0) {
+      if(slideIndex > 1) {
         slideIndex = slideIndex - 1;
       } else {
         slideIndex = slides.length;
       }
       console.log(slideIndex);
+      showSlide(slideIndex);
     };
 
     function pauseSlideshow(){
