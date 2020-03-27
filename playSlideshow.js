@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
         slides[i].style.display = "none";
       }
       slideIndex++;
+      if(slideIndex <= slides.length) {
+        slides[slideIndex-1].style.display = "block";
+      }
 
-      slides[slideIndex-1].style.display = "block";
     }
 
     var playing = true;
@@ -34,15 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function pauseSlideshow(){
-      console.log('pause called');
-    	pauseButton.innerHTML = 'Play';
+      document.getElementById("pause-icon").className = "fa fa-play";
     	playing = false;
     	clearInterval(slideInterval);
     }
 
     function playSlideshow(){
-      console.log('play called');
-    	pauseButton.innerHTML = 'Pause';
+    	document.getElementById("pause-icon").className = "fa fa-pause";
     	playing = true;
     	slideInterval = setInterval(nextSlide,2000);
     }
