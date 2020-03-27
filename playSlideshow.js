@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
 
     var slideIndex = 0;
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         slides[i].style.display = "none";
       }
       slideIndex++;
+
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
       }
@@ -26,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
       }
+
     }
 
     var playing = true;
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         playSlideshow();
       }
     };
+
 
     var resetButton = document.getElementById("reset");
 
