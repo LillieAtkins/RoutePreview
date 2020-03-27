@@ -2,15 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var slideIndex = 0;
     var slideInterval = setInterval(nextSlide,2000);
+    var slides = document.getElementsByClassName("mySlides");
     nextSlide();
-
-    function plusSlides(n) {
-      nextSlide(slideIndex += n);
-    }
 
     function nextSlide(){
       var i;
-      var slides = document.getElementsByClassName("mySlides");
+
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
       }
@@ -43,14 +40,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     nextButton.onclick = function(){
       console.log('next button called');
-      plusSlides(1);
+      if(slideIndex <= slides.length) {
+        slideIndex = slideIndex + 1;
+      } else {
+        slideIndex = 0;
+      }
+      console.log(slideIndex);
     };
 
     var prevButton = document.getElementById("backward");
 
     prevButton.onclick = function(){
       console.log('prev button called');
-      plusSlides(-1);
+      if(slideIndex >= 0) {
+        slideIndex = slideIndex - 1;
+      } else {
+        slideIndex = slides.length;
+      }
+      console.log(slideIndex);
     };
 
     function pauseSlideshow(){
