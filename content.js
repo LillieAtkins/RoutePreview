@@ -103,7 +103,7 @@ try {
           exit_icon.style.top = '21%';
           exit_icon.style.right = '31%';
           expand_icon.style.top = '21%';
-          expand_icon.style.right = '25%';
+          expand_icon.style.right = '34%';
           expand_icon.innerHTML = 'Expand';
           surround_div.style.display = 'none';
         }
