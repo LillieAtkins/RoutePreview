@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
 document.addEventListener('DOMContentLoaded', function () {
 
     var slideIndex = 0;
@@ -12,6 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
         slides[i].style.display = "none";
       }
       slideIndex++;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
       }
@@ -26,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
       }
+
     }
 
     var playing = true;
@@ -40,6 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 75cbfa481065480e1e99c228566112693ed913b7
     var resetButton = document.getElementById("reset");
 
     resetButton.onclick = function(){
