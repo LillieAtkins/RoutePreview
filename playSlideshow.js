@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var slideInterval = setInterval(nextSlide,2000);
     nextSlide();
 
+    function plusSlides(n) {
+      nextSlide(slideIndex += n);
+    }
+
     function nextSlide(){
       var i;
       var slides = document.getElementsByClassName("mySlides");
@@ -33,6 +37,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resetButton.onclick = function(){
       slideIndex = 0;
+    };
+
+    var nextButton = document.getElementById("forward");
+
+    nextButton.onclick = function(){
+      console.log('next button called');
+      plusSlides(1);
+    };
+
+    var prevButton = document.getElementById("backward");
+
+    prevButton.onclick = function(){
+      console.log('prev button called');
+      plusSlides(-1);
     };
 
     function pauseSlideshow(){

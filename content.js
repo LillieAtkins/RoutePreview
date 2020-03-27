@@ -131,8 +131,6 @@ try {
     getLatandLog();
     //Suggestion: API for Google StreetView
     //getStreetViews();
-    //Suggestion: calling function to show video
-    showVideo();
   }
 
   function getLatandLog(){
@@ -169,11 +167,6 @@ try {
       //  EX: ---> let slides = document.getElementsByClassName("FINAL_LOCATION");
       return 'FINAL_LOCATION';
   }
-
-  function showVideo(){
-    //Show video - (could be pointer to another file)
-  }
-
 
 
   //Enables the course preview button to be clicked and used
