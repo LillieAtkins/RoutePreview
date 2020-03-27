@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script src="content.js"></script>
+  <script src="playSlideshow.js"></script>
   <title>Course Preview</title>
   <meta charset = "UTF-8">
   <link rel = "stylesheet"
@@ -13,12 +14,44 @@
 </head>
 <body>
   <div id="course_preview_popup">
-    <div id="expand_link">
-      <a href="https://www.google.com">Expand Icon</a>
+    <div class="slideshow-container">
+      <div class="mySlides fade">
+        <img src="picture1.png" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="picture2.png" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="picture3.png" style="width:100%">
+      </div>
     </div>
-    <div id="static_preview_image">
-      <image src="icons/preview_image.png"/>
-    </div>
+   
+    
+    <!-- <ul id="slides">
+    	<div class="slide showing">
+        <img src="picture1.png" style="width:100%">
+      </div>
+    	<div class="slide">
+        <img src="picture2.png" style="width:100%">
+      </div>
+      <div class="slide">
+        <img src="picture3.png" style="width:100%">
+      </div>
+    </ul> -->
+    <button class="controls" id="pause">Pause</button>
   </div>
 </body>
 </html>
+
+<!-- function playPause() {
+var mediaPlayer = document.getElementById('media-video');
+if (mediaPlayer.paused) {
+  mediaPlayer.play();
+  $('.pause-btn').show();
+  $('.play-btn').hide();
+} else {
+  mediaPlayer.pause();
+  $('.play-btn').show();
+  $('.pause-btn').hide();
+}
+} -->
