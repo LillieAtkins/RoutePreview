@@ -9,8 +9,12 @@ try {
         var before_content = document.getElementsByClassName("text-bold text-headline");//"route-card");//
         var btn = document.createElement("BUTTON");
         //Course Preview Button's Properties and Styling
-        btn.style.color = 'white';
-        btn.style.background = 'black';
+        btn.style.color = 'white';//'white';
+        btn.style.background = 'rgba(0,0,0,.4)';//black';
+        btn.style.position = 'absolute';
+        btn.style.display = 'block';
+        btn.style.top = 0;
+        btn.style.left =3;
         btn.innerHTML = "Course Preview";
         btn.setAttribute("class","course_preview_class");
         //Create a course preview button for each route
@@ -18,8 +22,11 @@ try {
         while (button_index < before_content.length){
           //Ensure that the buttons show
           let assigned_button = null;
+          //Resets the route_id
+          let route_id = null;
           assigned_button = btn.cloneNode(true);
-          assigned_button.setAttribute("id","course_preview_btn"+button_index);
+          //assigned_button.setAttribute("id","course_preview_btn"+button_index);
+          assigned_button.setAttribute("id",button_index);
           //Put the course preview button in the route-card
           before_content[button_index].appendChild(assigned_button);
 
@@ -30,12 +37,11 @@ try {
           //Get the "a" that is holding the route id
           var route_id_holder = route_card.querySelector('a');
           //Extract the actual route_id
-          var route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
+          route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
           //Action that takes place when we click the Course Preview Button
           assigned_button.onclick = function (){
             //Show our popup;
             surround_div.style.display = 'flex';
-                
             //Start for functionality of our project
             //Route preview for the specific route id given
             displayPreview(route_id);
@@ -77,7 +83,7 @@ try {
         expand_icon.style.right = '34%';
         expand_icon.style.position = "absolute";
 
-        //Handles the onclick function on shrinking and expanding    
+        //Handles the onclick function on shrinking and expanding
         expand_icon.onclick = function(){
           if (object.width != '100%' && object.height != '100%'){
             object.width = '100%';
@@ -135,18 +141,62 @@ try {
         }
     }
 
-  function displayPreview(route_id){
+  async function displayPreview(route_id){
     //Suggestion: API for Strava code could go here
-    const list_lats_longs = getLatandLog(route_id);
+    //getLatandLog();
+    const list_lats_longs = await reAuthorize(route_id).then(res => res);
+    console.log(list_lats_longs);
+    //const list_lats_longs = getLatandLog(route_id);
     //Suggestion: API for Google StreetView
     //getStreetViews(list_lats_longs);
   }
 
- function getLatandLog(route_id){
-   console.log(route_id);//Prints route id
-    //code here
-    //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
-    return []
+  async function getLatandLog(res, routeID){
+    // will eventually use this when we move the button to the other page to get the route id
+    //const route_id_holder = document.getElementsByClassName("route-card").querySelectorAll("a");
+
+    //const route_link2 = `https://www.strava.com/api/v3/routes/${route_id_holder[0].href}/streams?access_token=${res.access_token}`
+    const route_link = `https://www.strava.com/api/v3/routes/${routeID}/streams?access_token=${res.access_token}`
+
+    return await fetch(route_link).then(res => {
+          //Get the Promises
+          return res.json()
+    })
+      .then(res =>  {
+          //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
+          return res[0].data
+    }).catch(error => console.log("Extracting Longitude/Latitude error \n",error));
+  }
+
+// TODO: CATCH ERRORS
+//This reauthorizes (uses refresh token to get new auth token) , calls
+//getLatandLog with the new auth token which then returns the lat lng array
+  async function reAuthorize(route_id){
+    const auth_link = "https://www.strava.com/oauth/token"
+      return await fetch(auth_link,{
+          method: 'post',
+          headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+
+          },
+
+          body: JSON.stringify({
+              client_id: 'xxxx',
+              client_secret: 'xxxxxxxxxxxxxxxxxxx',
+              refresh_token: 'xxxxxxxxxxxxxxxxxxx',
+              grant_type: 'refresh_token'
+          })
+      })
+      .then(res => {
+             //Get the Promise
+            return res.json()
+      })
+        .then(res => {
+            //Get the object return from the Promise
+            return getLatandLog(res,route_id) //the routeID should come from the page
+      })    
+        .catch(error => console.log("reAuthorize error \n",error));
   }
 
 
@@ -185,4 +235,3 @@ catch (err){
   console.log(err);
   //If something goes wrong
 }
-
