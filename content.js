@@ -128,7 +128,8 @@ try {
   function displayPreview(){
     //Suggestion: API for Strava code could go here
     //getLatandLog();
-    reAuthorize();
+    const latlngs = reAuthorize().then(res => res);
+    
     //Suggestion: API for Google StreetView
     //getStreetViews();
   }
@@ -136,19 +137,23 @@ try {
   function getLatandLog(res, routeID){
     //code here
     //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
+
+    // will eventually use this when we move the button to the other page to get the route id
     //const route_id_holder = document.getElementsByClassName("route-card").querySelectorAll("a");
 
     //const route_link2 = `https://www.strava.com/api/v3/routes/${route_id_holder[0].href}/streams?access_token=${res.access_token}`
-
     const route_link = `https://www.strava.com/api/v3/routes/${routeID}/streams?access_token=${res.access_token}`
 
-    return fetch(route_link).then((res) => res.json()).then(res => res[0].data)
+    return fetch(route_link).then(res => res.json())
+      .then(res => res[0].data).catch(error => console.log("ERROR"));
   }
 
 // TODO: CATCH ERRORS
+//This reauthorizes (uses refresh token to get new auth token) , calls
+//getLatandLog with the new auth token which then returns the lat lng array
   function reAuthorize(){
     const auth_link = "https://www.strava.com/oauth/token"
-      fetch(auth_link,{
+      return fetch(auth_link,{
           method: 'post',
           headers: {
               'Accept': 'application/json, text/plain, */*',
@@ -165,6 +170,7 @@ try {
       })
       .then(res => res.json())
         .then(res => getLatandLog(res,22220451))     //the routeID should come from the page
+        .then(res => res).catch(error => console.log("ERROR"));
   }
 
   //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
