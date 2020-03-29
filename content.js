@@ -9,8 +9,12 @@ try {
         var before_content = document.getElementsByClassName("text-bold text-headline");//"route-card");//
         var btn = document.createElement("BUTTON");
         //Course Preview Button's Properties and Styling
-        btn.style.color = 'white';
-        btn.style.background = 'black';
+        btn.style.color = 'white';//'white';
+        btn.style.background = 'rgba(0,0,0,.4)';//black';
+        btn.style.position = 'absolute';
+        btn.style.display = 'block';
+        btn.style.top = 0;
+        btn.style.left =3;
         btn.innerHTML = "Course Preview";
         btn.setAttribute("class","course_preview_class");
         //Create a course preview button for each route
@@ -18,6 +22,8 @@ try {
         while (button_index < before_content.length){
           //Ensure that the buttons show
           let assigned_button = null;
+          //Resets the route_id
+          let route_id = null;
           assigned_button = btn.cloneNode(true);
           //assigned_button.setAttribute("id","course_preview_btn"+button_index);
           assigned_button.setAttribute("id",button_index);
@@ -31,20 +37,14 @@ try {
           //Get the "a" that is holding the route id
           var route_id_holder = route_card.querySelector('a');
           //Extract the actual route_id
-          var route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
+          route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
           //Action that takes place when we click the Course Preview Button
           assigned_button.onclick = function (){
             //Show our popup;
             surround_div.style.display = 'flex';
             //Start for functionality of our project
             //Route preview for the specific route id given
-
-            // we want to use the assigned button id to get the button that the
-            // user clicked on
-            var route_card2 = route_cards[assigned_button.id];
-            var route_id_holder2 = route_card2.querySelector('a');
-            var route_id2 = route_id_holder2.href.substring(30, route_id_holder2.href.length );
-            displayPreview(route_id2);
+            displayPreview(route_id);
           }
           button_index++;
         }
@@ -145,23 +145,27 @@ try {
     //Suggestion: API for Strava code could go here
     //getLatandLog();
     const list_lats_longs = reAuthorize(route_id).then(res => res);
+    console.log(list_lats_longs);
     //const list_lats_longs = getLatandLog(route_id);
     //Suggestion: API for Google StreetView
     //getStreetViews(list_lats_longs);
   }
 
   function getLatandLog(res, routeID){
-    //code here
-    //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
-
     // will eventually use this when we move the button to the other page to get the route id
     //const route_id_holder = document.getElementsByClassName("route-card").querySelectorAll("a");
 
     //const route_link2 = `https://www.strava.com/api/v3/routes/${route_id_holder[0].href}/streams?access_token=${res.access_token}`
     const route_link = `https://www.strava.com/api/v3/routes/${routeID}/streams?access_token=${res.access_token}`
 
-    return fetch(route_link).then(res => res.json())
-      .then(res => res[0].data).catch(error => console.log("ERROR"));
+    return fetch(route_link).then(res => {
+          //Get the Promises
+          return res.json()
+    })
+      .then(res =>  {
+          //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
+          return res[0].data
+    }).catch(error => console.log("Extracting Longitude/Latitude error \n",error));
   }
 
 // TODO: CATCH ERRORS
@@ -184,9 +188,15 @@ try {
               grant_type: 'refresh_token'
           })
       })
-      .then(res => res.json())
-        .then(res => getLatandLog(res,route_id))     //the routeID should come from the page
-        .then(res => res).catch(error => console.log("ERROR"));
+      .then(res => {
+             //Get the Promise
+            return res.json()
+      })
+        .then(res => {
+            //Get the object return from the Promise
+            getLatandLog(res,route_id) //the routeID should come from the page
+      })    
+        .catch(error => console.log("reAuthorize error \n",error));
   }
 
 
