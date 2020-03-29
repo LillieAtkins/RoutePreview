@@ -103,7 +103,7 @@ try {
           exit_icon.style.top = '21%';
           exit_icon.style.right = '31%';
           expand_icon.style.top = '21%';
-          expand_icon.style.right = '25%';
+          expand_icon.style.right = '34%';
           expand_icon.innerHTML = 'Expand';
           surround_div.style.display = 'none';
         }
@@ -131,8 +131,6 @@ try {
     reAuthorize();
     //Suggestion: API for Google StreetView
     //getStreetViews();
-    //Suggestion: calling function to show video
-    showVideo();
   }
 
   function getLatandLog(res, routeID){
@@ -198,11 +196,6 @@ try {
       //  EX: ---> let slides = document.getElementsByClassName("FINAL_LOCATION");
       return 'FINAL_LOCATION';
   }
-
-  function showVideo(){
-    //Show video - (could be pointer to another file)
-  }
-
 
 
   //Enables the course preview button to be clicked and used
