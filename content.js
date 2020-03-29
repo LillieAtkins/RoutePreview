@@ -141,24 +141,24 @@ try {
         }
     }
 
-  function displayPreview(route_id){
+  async function displayPreview(route_id){
     //Suggestion: API for Strava code could go here
     //getLatandLog();
-    const list_lats_longs = reAuthorize(route_id).then(res => res);
+    const list_lats_longs = await reAuthorize(route_id).then(res => res);
     console.log(list_lats_longs);
     //const list_lats_longs = getLatandLog(route_id);
     //Suggestion: API for Google StreetView
     //getStreetViews(list_lats_longs);
   }
 
-  function getLatandLog(res, routeID){
+  async function getLatandLog(res, routeID){
     // will eventually use this when we move the button to the other page to get the route id
     //const route_id_holder = document.getElementsByClassName("route-card").querySelectorAll("a");
 
     //const route_link2 = `https://www.strava.com/api/v3/routes/${route_id_holder[0].href}/streams?access_token=${res.access_token}`
     const route_link = `https://www.strava.com/api/v3/routes/${routeID}/streams?access_token=${res.access_token}`
 
-    return fetch(route_link).then(res => {
+    return await fetch(route_link).then(res => {
           //Get the Promises
           return res.json()
     })
@@ -171,9 +171,9 @@ try {
 // TODO: CATCH ERRORS
 //This reauthorizes (uses refresh token to get new auth token) , calls
 //getLatandLog with the new auth token which then returns the lat lng array
-  function reAuthorize(route_id){
+  async function reAuthorize(route_id){
     const auth_link = "https://www.strava.com/oauth/token"
-      return fetch(auth_link,{
+      return await fetch(auth_link,{
           method: 'post',
           headers: {
               'Accept': 'application/json, text/plain, */*',
@@ -194,7 +194,7 @@ try {
       })
         .then(res => {
             //Get the object return from the Promise
-            getLatandLog(res,route_id) //the routeID should come from the page
+            return getLatandLog(res,route_id) //the routeID should come from the page
       })    
         .catch(error => console.log("reAuthorize error \n",error));
   }
