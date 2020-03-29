@@ -6,27 +6,52 @@ try {
       //If the document body has loaded - display our button
       if (document.body){
         //Display the Course Preview Button
-        var before_content = document.getElementById("builder-controls");
+        var before_content = document.getElementsByClassName("text-bold text-headline");//"route-card");//
         var btn = document.createElement("BUTTON");
         //Course Preview Button's Properties and Styling
         btn.style.color = 'white';
-        btn.style.background = 'gray';
-        btn.disabled = true;
+        btn.style.background = 'black';
         btn.innerHTML = "Course Preview";
-        btn.setAttribute("id","course_preview_btn");
         btn.setAttribute("class","course_preview_class");
-        if (before_content){
-          //Adds the actual button to the page
-          before_content.appendChild(btn);
+        //Create a course preview button for each route
+        let button_index = 0;
+        while (button_index < before_content.length){
+          //Ensure that the buttons show
+          let assigned_button = null;
+          assigned_button = btn.cloneNode(true);
+          assigned_button.setAttribute("id","course_preview_btn"+button_index);
+          //Put the course preview button in the route-card
+          before_content[button_index].appendChild(assigned_button);
+
+          // Extract the route id from the route route_cards
+          var route_cards = document.getElementsByClassName("route-card");
+          //Get specfic route card
+          var route_card = route_cards[button_index];
+          //Get the "a" that is holding the route id
+          var route_id_holder = route_card.querySelector('a');
+          //Extract the actual route_id
+          var route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
+          //Action that takes place when we click the Course Preview Button
+          assigned_button.onclick = function (){
+            //Show our popup;
+            surround_div.style.display = 'flex';
+                
+            //Start for functionality of our project
+            //Route preview for the specific route id given
+            displayPreview(route_id);
+          }
+          button_index++;
         }
+
         //Displays our Popup from the popup.html file
-        var popup_area = document.getElementById("map-canvas");
+        var popup_area = document.getElementsByClassName("view");
         var surround_div = document.createElement("div");
         //Object holds/displays the popup.html code
         var object = document.createElement("object");
         object.data = chrome.runtime.getURL("popup.html");
         object.height = 350;
         object.width = 400;
+        object.style.objectFit = 'cover';
         object.setAttribute("id","course_preview_object");
 
 
@@ -52,7 +77,7 @@ try {
         expand_icon.style.right = '34%';
         expand_icon.style.position = "absolute";
 
-        //Expands and shrinks the popup when the expand/shrink link is clicked
+        //Handles the onclick function on shrinking and expanding    
         expand_icon.onclick = function(){
           if (object.width != '100%' && object.height != '100%'){
             object.width = '100%';
@@ -80,7 +105,7 @@ try {
         surround_div.appendChild(expand_icon);
         //Places the exit icon in the div
         surround_div.appendChild(exit_icon);
-
+        //Sets the properties of the surround_div
         surround_div.style.position = "fixed";
         surround_div.style.zIndex = 9000;
         surround_div.style.textAlign = 'center';
@@ -91,7 +116,8 @@ try {
         //Vertically align the div
         surround_div.style.justifyContent= "center";
         object.style.alignSelf= "center";
-        document.body.appendChild(surround_div);
+      //  document.body.appendChild(surround_div);
+        popup_area[0].appendChild(surround_div);
         //Hide the popup until after the user clicks on the course_preview button
         surround_div.style.display = 'none';
 
@@ -107,40 +133,26 @@ try {
           expand_icon.innerHTML = 'Expand';
           surround_div.style.display = 'none';
         }
-
-        //Action that takes place when a user clicks the page
-        document.addEventListener("click", function(){
-          if (btn.disabled){
-            //Sometimes the update for the save button lags
-            setTimeout(enableCoursePreview, 1500);
-          }
-          //Action that takes place when we click the Course Preview Button
-          btn.addEventListener("click", function(){
-            //Show our popup;
-            surround_div.style.display = 'flex';
-
-            //Start for functionality of our project
-            displayPreview();
-          })
-
-        });
     }
 
-  function displayPreview(){
+  function displayPreview(route_id){
     //Suggestion: API for Strava code could go here
-    getLatandLog();
+    const list_lats_longs = getLatandLog(route_id);
     //Suggestion: API for Google StreetView
-    //getStreetViews();
+    //getStreetViews(list_lats_longs);
   }
 
-  function getLatandLog(){
+ function getLatandLog(route_id){
+   console.log(route_id);//Prints route id
     //code here
     //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
+    return []
   }
 
+
   //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
-      //Returns and puts a view of the street in a div
-      //All the street view divs are appended as children to another div
+  //Returns and puts a view of the street in a div
+  //All the street view divs are appended as children to another div
   //Return the name of the class that stores the street view divs
   function getStreetViews(list_lats_longs){
     for (let i = 0; i < list_lats_longs.length; i++){
@@ -168,22 +180,9 @@ try {
       return 'slideshow-container';
   }
 
-
-  //Enables the course preview button to be clicked and used
-  //   --> if save button is enabled and our button is not already enabled
-  function enableCoursePreview(){
-    //Gets the save orange button
-    var save_button = document.getElementsByClassName("save-route");
-    //If the save_button is not disabled and we have not already enabled our button --> enable our button
-    if (!save_button[0].className.includes("disabled") && btn.disabled){
-      btn.disabled = false;
-      btn.style.color = 'white';
-      btn.style.background = 'black';
-    }
-  }
-
 }
 catch (err){
   console.log(err);
   //If something goes wrong
 }
+
