@@ -118,7 +118,6 @@ try {
           btn.addEventListener("click", function(){
             //Show our popup;
             surround_div.style.display = 'flex';
-
             //Start for functionality of our project
             displayPreview();
           })
@@ -128,16 +127,46 @@ try {
 
   function displayPreview(){
     //Suggestion: API for Strava code could go here
-    getLatandLog();
+    //getLatandLog();
+    reAuthorize();
     //Suggestion: API for Google StreetView
     //getStreetViews();
     //Suggestion: calling function to show video
     showVideo();
   }
 
-  function getLatandLog(){
+  function getLatandLog(res, routeID){
     //code here
     //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
+    //const route_id_holder = document.getElementsByClassName("route-card").querySelectorAll("a");
+
+    //const route_link2 = `https://www.strava.com/api/v3/routes/${route_id_holder[0].href}/streams?access_token=${res.access_token}`
+
+    const route_link = `https://www.strava.com/api/v3/routes/${routeID}/streams?access_token=${res.access_token}`
+
+    return fetch(route_link).then((res) => res.json()).then(res => res[0].data)
+  }
+
+// TODO: CATCH ERRORS
+  function reAuthorize(){
+    const auth_link = "https://www.strava.com/oauth/token"
+      fetch(auth_link,{
+          method: 'post',
+          headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+
+          },
+
+          body: JSON.stringify({
+              client_id: '44955',
+              client_secret: '5579411a2bb89908341e9a0defe536ce9a9768b8',
+              refresh_token: '08b186a3ae69e8c916c93a3d547790b818682080',
+              grant_type: 'refresh_token'
+          })
+      })
+      .then(res => res.json())
+        .then(res => getLatandLog(res,22220451))     //the routeID should come from the page
   }
 
   //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
