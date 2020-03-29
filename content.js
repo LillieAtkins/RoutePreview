@@ -19,7 +19,8 @@ try {
           //Ensure that the buttons show
           let assigned_button = null;
           assigned_button = btn.cloneNode(true);
-          assigned_button.setAttribute("id","course_preview_btn"+button_index);
+          //assigned_button.setAttribute("id","course_preview_btn"+button_index);
+          assigned_button.setAttribute("id",button_index);
           //Put the course preview button in the route-card
           before_content[button_index].appendChild(assigned_button);
 
@@ -35,10 +36,15 @@ try {
           assigned_button.onclick = function (){
             //Show our popup;
             surround_div.style.display = 'flex';
-                
             //Start for functionality of our project
             //Route preview for the specific route id given
-            displayPreview(route_id);
+
+            // we want to use the assigned button id to get the button that the
+            // user clicked on
+            var route_card2 = route_cards[assigned_button.id];
+            var route_id_holder2 = route_card2.querySelector('a');
+            var route_id2 = route_id_holder2.href.substring(30, route_id_holder2.href.length );
+            displayPreview(route_id2);
           }
           button_index++;
         }
@@ -77,7 +83,7 @@ try {
         expand_icon.style.right = '34%';
         expand_icon.style.position = "absolute";
 
-        //Handles the onclick function on shrinking and expanding    
+        //Handles the onclick function on shrinking and expanding
         expand_icon.onclick = function(){
           if (object.width != '100%' && object.height != '100%'){
             object.width = '100%';
@@ -133,41 +139,17 @@ try {
           expand_icon.innerHTML = 'Expand';
           surround_div.style.display = 'none';
         }
-<<<<<<< HEAD
-
-        //Action that takes place when a user clicks the page
-        document.addEventListener("click", function(){
-          if (btn.disabled){
-            //Sometimes the update for the save button lags
-            setTimeout(enableCoursePreview, 1500);
-          }
-          //Action that takes place when we click the Course Preview Button
-          btn.addEventListener("click", function(){
-            //Show our popup;
-            surround_div.style.display = 'flex';
-            //Start for functionality of our project
-            displayPreview();
-          })
-
-        });
-=======
->>>>>>> master
     }
 
   function displayPreview(route_id){
     //Suggestion: API for Strava code could go here
-<<<<<<< HEAD
     //getLatandLog();
-    const latlngs = reAuthorize().then(res => res);
-    
-=======
-    const list_lats_longs = getLatandLog(route_id);
->>>>>>> master
+    const list_lats_longs = reAuthorize(route_id).then(res => res);
+    //const list_lats_longs = getLatandLog(route_id);
     //Suggestion: API for Google StreetView
     //getStreetViews(list_lats_longs);
   }
 
-<<<<<<< HEAD
   function getLatandLog(res, routeID){
     //code here
     //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
@@ -185,7 +167,7 @@ try {
 // TODO: CATCH ERRORS
 //This reauthorizes (uses refresh token to get new auth token) , calls
 //getLatandLog with the new auth token which then returns the lat lng array
-  function reAuthorize(){
+  function reAuthorize(route_id){
     const auth_link = "https://www.strava.com/oauth/token"
       return fetch(auth_link,{
           method: 'post',
@@ -196,22 +178,15 @@ try {
           },
 
           body: JSON.stringify({
-              client_id: '44955',
-              client_secret: '5579411a2bb89908341e9a0defe536ce9a9768b8',
-              refresh_token: '08b186a3ae69e8c916c93a3d547790b818682080',
+              client_id: 'xxxx',
+              client_secret: 'xxxxxxxxxxxxxxxxxxx',
+              refresh_token: 'xxxxxxxxxxxxxxxxxxx',
               grant_type: 'refresh_token'
           })
       })
       .then(res => res.json())
-        .then(res => getLatandLog(res,22220451))     //the routeID should come from the page
+        .then(res => getLatandLog(res,route_id))     //the routeID should come from the page
         .then(res => res).catch(error => console.log("ERROR"));
-=======
- function getLatandLog(route_id){
-   console.log(route_id);//Prints route id
-    //code here
-    //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
-    return []
->>>>>>> master
   }
 
 
@@ -250,4 +225,3 @@ catch (err){
   console.log(err);
   //If something goes wrong
 }
-
