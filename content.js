@@ -162,7 +162,7 @@ try {
       current_div.setAttribute("class","course_preview_slideshow");
       current_div.setAttribute("id",id_name);
       //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
-      var global_div = document.getElementById('FINAL_LOCATION');
+      var global_div = document.getElementById('slideshow-container');
       global_div.appendChild(current_div);
       //Calls the Google Street View and puts the info in the div
         //Google Street View API takes in a latitude and longitude --> returns a div for every request
@@ -176,8 +176,8 @@ try {
         });
       }
       ///All the Google Street View divs CAN BE RETREIVED BY CALLING
-      //  EX: ---> let slides = document.getElementsByClassName("FINAL_LOCATION");
-      return 'FINAL_LOCATION';
+      //  EX: ---> let slides = document.getElementsByClassName("slideshow-container);
+      return 'slideshow-container';
   }
 
 }
