@@ -1,6 +1,7 @@
 //Delete line 1 and 2 later --> useful now for testing sessionStorage when getting authorization
 //sessionStorage.setItem("user_access_value", ""); //Uncomment to reset
 
+//Run this functionality when we are on strava's athlete route page
 if (window.location.href=== 'https://www.strava.com/athlete/routes'){
   //Calls the action when we run the specified pages so that the popup will appear
   chrome.runtime.sendMessage('showPageAction');
@@ -173,7 +174,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
       const list_lats_longs = await reAuthorize(route_id).then(res => res);
       //Suggestion: API for Google StreetView
       //getStreetViews(list_lats_longs);
-        sessionStorage.setItem("route_id_given", '');
+      //Resets the session storage
+      sessionStorage.setItem("route_id_given", '');
     }
 
   async function getLatandLog(res, route_id){
@@ -184,7 +186,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
     }).then(res=>{
       //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
       return res[0].data;
-    }).catch(error => console.log("getLatandLog2 error \n",error));
+    }).catch(error => console.log("getLatandLog error \n",error));
   }
 
   // TODO: CATCH ERRORS
@@ -216,50 +218,35 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
          }).catch(error => console.log("reAuthorize error",error));
      }
 
-    //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
-    //Returns and puts a view of the street in a div
-    //All the street view divs are appended as children to another div
-    //Return the name of the class that stores the street view divs
-    function getStreetViews(list_lats_longs){
-      for (let i = 0; i < list_lats_longs.length; i++){
-        //Create a div location to store the Google Street View Info
-        var current_div = document.createElement("div");
-        var id_name = "slidestreet" + i;
-        current_div.setAttribute("class","course_preview_slideshow");
-        current_div.setAttribute("id",id_name);
-        //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
-        //var global_div = document.getElementsByClassName('FINAL_LOCATION');
-        var global_div = document.getElementById('course_preview_object');
-        global_div.appendChild(current_div);
-        //Calls the Google Street View and puts the info in the div
-          //Google Street View API takes in a latitude and longitude --> returns a div for every request
-        new google.maps.StreetViewPanorama(
-            current_div, {
-            position: list_lats_longs[i],
-            pov: {
-              heading: 165,
-              pitch: 1
-            }
-          });
-        }
-        ///All the Google Street View divs CAN BE RETREIVED BY CALLING
-        //  EX: ---> let slides = document.getElementsByClassName("FINAL_LOCATION");
-        return 'course_preview_object';
-    }
-
-    //Enables the course preview button to be clicked and used
-    //   --> if save button is enabled and our button is not already enabled
-    function enableCoursePreview(){
-      //Gets the save orange button
-      var save_button = document.getElementsByClassName("save-route");
-      //If the save_button is not disabled and we have not already enabled our button --> enable our button
-      if (!save_button[0].className.includes("disabled") && btn.disabled){
-        btn.disabled = false;
-        btn.style.color = 'white';
-        btn.style.background = 'black';
+  //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
+  //Returns and puts a view of the street in a div
+  //All the street view divs are appended as children to another div
+  //Return the name of the class that stores the street view divs
+  function getStreetViews(list_lats_longs){
+    for (let i = 0; i < list_lats_longs.length; i++){
+      //Create a div location to store the Google Street View Info
+      var current_div = document.createElement("div");
+      var id_name = "slidestreet" + i;
+      current_div.setAttribute("class","course_preview_slideshow");
+      current_div.setAttribute("id",id_name);
+      //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
+      var global_div = document.getElementById('slideshow-container');
+      global_div.appendChild(current_div);
+      //Calls the Google Street View and puts the info in the div
+        //Google Street View API takes in a latitude and longitude --> returns a div for every request
+      new google.maps.StreetViewPanorama(
+          current_div, {
+          position: list_lats_longs[i],
+          pov: {
+            heading: 165,
+            pitch: 1
+          }
+        });
       }
+      ///All the Google Street View divs CAN BE RETREIVED BY CALLING
+      //  EX: ---> let slides = document.getElementsByClassName("slideshow-container);
+      return 'slideshow-container';
     }
-
   }
   catch (err){
     console.log(err);
@@ -267,7 +254,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
   }
 }
 
-//Loading the strava authorization screen
+//Run this functionality when on the strava's authorization page
 else if (window.location.href.includes("oauth")){
   console.log('new window loaded');
   //TODO: Actually recording the click on the "Authorize" and getting the user access value that we need 
