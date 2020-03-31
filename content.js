@@ -144,6 +144,7 @@ try {
   async function displayPreview(route_id){
     //Suggestion: API for Strava code could go here
     //getLatandLog();
+    authorize();
     const list_lats_longs = await reAuthorize(route_id).then(res => res);
     console.log(list_lats_longs);
     //const list_lats_longs = getLatandLog(route_id);
@@ -180,11 +181,10 @@ try {
               'Content-Type': 'application/json'
 
           },
-
           body: JSON.stringify({
-              client_id: 'xxxx',
-              client_secret: 'xxxxxxxxxxxxxxxxxxx',
-              refresh_token: 'xxxxxxxxxxxxxxxxxxx',
+              client_id: '44955',
+              client_secret: '5579411a2bb89908341e9a0defe536ce9a9768b8',
+              refresh_token: '08b186a3ae69e8c916c93a3d547790b818682080',
               grant_type: 'refresh_token'
           })
       })
@@ -195,8 +195,13 @@ try {
         .then(res => {
             //Get the object return from the Promise
             return getLatandLog(res,route_id) //the routeID should come from the page
-      })    
+      })
         .catch(error => console.log("reAuthorize error \n",error));
+  }
+
+  async function authorize(){
+    const auth_link = "https://www.strava.com/oauth/authorize?client_id=44955&redirect_uri=http://localhost&response_type=code&scope=read_all"
+    return await fetch(auth_link).then(res => console.log(res.getParameter))
   }
 
 
