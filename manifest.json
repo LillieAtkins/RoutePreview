@@ -14,7 +14,7 @@
   },
   "content_scripts":[
     {
-      "matches":["https://www.strava.com/athlete/routes"],
+      "matches":["https://www.strava.com/athlete/routes", "https://www.strava.com/oauth/authorize*"],
       "js":["content.js"],
       "run_at": "document_end"
     }
