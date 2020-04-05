@@ -20,6 +20,16 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
     })
   }
 
+  async function loadUserRefreshToken() {
+    await new Promise(resolve => {
+      chrome.storage.local.get({'refresh_token': ''}, function(items) {
+        console.log("refresh_token ", items.refresh_token)
+        sessionStorage.setItem("refresh_token", items.refresh_token);
+        resolve(items.refresh_token);
+      })
+    })
+  }
+
   // load the user refresh token from oath from local storage to session storage
   //loadUserResponseToken();
   //console.log("session storage response value");
@@ -35,6 +45,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
       if (document.body){
           //Display the Course Preview Button
           loadUserResponseToken();
+          loadUserRefreshToken();
           console.log("just loaded");
           console.log(sessionStorage.getItem("user_response_token"));
           var before_content = document.getElementsByClassName("route-card");//"text-bold text-headline");//
@@ -73,7 +84,18 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
               //Start for functionality of our project
               //displayPreview(route_id);
               //loadUserResponseToken();
-              authorizeUser(route_id);
+
+              //if the user has been auth and have refresh token
+              if(sessionStorage.getItem("user_response_token").length > 5 && sessionStorage.getItem("refresh_token").length > 5){
+                //user has been authorized -should be able to just use refresh token to display
+                //only need to use refresh token
+                const refresh_token = sessionStorage.getItem("refresh_token");//get refresh token
+                displayPreview2(route_id, refresh_token);
+
+              } else {
+                //user has not been authorized or dont have refresh token
+                authorizeUser(route_id);
+              }
             }
             button_index++;
           }
@@ -188,11 +210,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
     //  window.location.href = await "http://www.google.com";
       const userAccess_value = sessionStorage.getItem("user_response_token");
       //If the user's access has not already been given
-      console.log("USER ACCESS VALUE IN HERE")
-      console.log(userAccess_value);
-      console.log(userAccess_value.length < 1);
       if (userAccess_value.length < 1){
-        console.log("INSIDE")
         //Save route_id for sessionStorage for reauthorization
         sessionStorage.setItem("route_id_selected", route_id);
         //Redirect user to strava's authorization page to get access
@@ -200,7 +218,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
         window.location.replace(auth_link);
       }
       else{
-        //If access is given send user to authorization page
+        //If access is given we can just get the latlng
         console.log("ACCESS GIVEN")
         displayPreview(route_id, userAccess_value);
       }
@@ -213,9 +231,30 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
 
       // trial_token is the refresh token we get from passing in the auth token
       console.log("USER ACCESS VALUE ", userAccess_value)
-      const trial_token = await reAuthorize(route_id, userAccess_value).then(res => res);
+      const trial_token = await reAuthorize(route_id, userAccess_value).then(res => res); // this is what should only be done once
+
+      chrome.storage.local.set({'refresh_token': trial_token});
+      sessionStorage.setItem("refresh_token", trial_token);
+
       const latlng = await reAuthorize_next(route_id, trial_token).then(res => res);
       console.log("TRIAL TOKEN ", trial_token);
+      console.log("latlng ", latlng);
+      //Suggestion: API for Google StreetView
+      //getStreetViews(list_lats_longs);
+      //Resets the session storage
+      sessionStorage.setItem("route_id_given", '');
+    }
+
+    async function displayPreview2(route_id, refresh_token){
+      //Suggestion: API for Strava code could go here
+      //const list_lats_longs = getLatandLog(route_id);
+      //const list_lats_longs = await reAuthorize(route_id).then(res => res);
+
+      // trial_token is the refresh token we get from passing in the auth token
+      //console.log("USER ACCESS VALUE ", userAccess_value)
+      //const trial_token = await reAuthorize(route_id, userAccess_value).then(res => res); // this is what should only be done once
+      const latlng = await reAuthorize_next(route_id, refresh_token).then(res => res);
+      console.log("TRIAL TOKEN ", refresh_token);
       console.log("latlng ", latlng);
       //Suggestion: API for Google StreetView
       //getStreetViews(list_lats_longs);
