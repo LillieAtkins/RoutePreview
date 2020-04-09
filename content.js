@@ -254,10 +254,24 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
   }
 }
 
+//get the speed limits which takes in the list of latitudes and longitudes
+function getSpeedLimits(list_lats_longs) {
+  path = "";
+
+  for (let i = 0; i < list_lats_longs.length; i++){
+    path += "|" + list_lats_longs[i][0]; //create the parameters to send google maps
+
+  }
+  
+  //create the call
+  "https://roads.googleapis.com/v1/speedLimits?parameters&key=YOUR_API_KEY"
+}
+
+
 //Run this functionality when on the strava's authorization page
 else if (window.location.href.includes("oauth")){
   console.log('new window loaded');
-  //TODO: Actually recording the click on the "Authorize" and getting the user access value that we need 
+  //TODO: Actually recording the click on the "Authorize" and getting the user access value that we need
   window.onclick = function(){
       console.log('window clicked');
       //If current page is the oauth page
