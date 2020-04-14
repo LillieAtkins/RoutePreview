@@ -120,7 +120,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
             console.log("User has been authorized");
             const refresh_token = sessionStorage.getItem("refresh_token");//get refresh token
             //Start for functionality of our project
-            displayPreview(route_id, refresh_token);
+            initiateAuthorization(route_id, refresh_token);
             //Show our popup;
             surround_div.style.display = 'flex';
             
@@ -254,10 +254,21 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
     
     //Reauthorizes the user and retrieves the longitudes and latitudes
     //of the route id given (user must already be previously authorized)
-    async function displayPreview(route_id, refresh_token){
+    async function initiateAuthorization(route_id, refresh_token){
       // trial_token is the refresh token we get from passing in the auth token
       await reAuthorize_next(route_id, refresh_token).then(res =>res).catch(error => console.log("reAuthorize lat lng error",error));
       
+    }
+    
+    //Get the speed limits based on the latitude and longitude pairs given
+    //Make a Google Street View div for every latitude and longitude pair given
+    function displayPreview(list_lats_longs){
+      //Suggestion: API for Google StreetView
+      console.log(list_lats_longs);
+      //getStreetViews(list_lats_longs);
+      //Clears the curent route id selected
+      chrome.storage.sync.set({"route_id_selected":''}, function() {
+      });
     }
     
     //Retrieves the latitudes and longitudes of the route id given
@@ -269,12 +280,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         return result.json();
       }).then(result=>{
         //Returns array, (i.e [{lat: ####, lng:###},{lat: ####, lng:###},..]) for the Google Street View API
-        let latlng = result[0].data;
-        console.log("latlng ", latlng);
-        //Suggestion: API for Google StreetView
-        //getStreetViews(list_lats_longs);
-        //Resets the session storage
-        sessionStorage.setItem("route_id_given", '');
+        displayPreview(result[0].data);
         return result[0].data;
       }).catch(error => console.log("getLatandLog error \n",error));
     }
