@@ -94,12 +94,10 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         // Extract the route id
         //Expanded route page
         if (Number.isInteger(parseInt(window.location.href.charAt(window.location.href.length-1)))){
-          
-          var route_cards = document.getElementsByClassName("clone-route btn btn-sm btn-default");
-          //Get the "a" that is holding the route id
-          var route_id_holder = route_cards[button_index];
+          //Get the route id from the url
+          let current_url  = window.location.href;
           //Extract the actual route_id
-          route_id = route_id_holder.href.substring(8, 16);
+          route_id = current_url.substring(30, current_url.length);
         }
         //General route page
         else{
