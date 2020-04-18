@@ -1,3 +1,4 @@
+let slideIndex = 0;
 //Listens for messages from the content.js file
 //The message will attach the array of latitudes and longitudes which we will use
 //to the extract the street views and speed limits
@@ -18,6 +19,8 @@ window.addEventListener('message', event => {
 //Get the speed limits based on the latitude and longitude pairs given
 //Make a Google Street View div for every latitude and longitude pair given
 function executeDisplay(list_lats_longs){
+  //Resets slideshow back to first screen
+  slideIndex = 0;
   //Suggestion: API for Google StreetView
   getStreetViews(list_lats_longs);
 }
