@@ -146,8 +146,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       }
       var surround_div = document.createElement("div");
       //Object holds/displays the popup.html code
-      var object = document.createElement("object");
-      object.data = chrome.runtime.getURL("popup.html");
+      var object = document.createElement("iframe");
+      object.src = chrome.runtime.getURL("popup.html");
       object.height = 350;
       object.width = 400;
       object.style.objectFit = 'cover';
@@ -265,8 +265,11 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
     function displayPreview(list_lats_longs){
       //Suggestion: API for Google StreetView
       console.log(list_lats_longs);
-      //getStreetViews(list_lats_longs);
-      //Clears the curent route id selected
+      //Sends the latitudes and longitudes to the popup.html javascript page to work to
+      //get the speed limits and street views
+      var course_preview_iframe = document.getElementById('course_preview_object');
+      course_preview_iframe.contentWindow.postMessage(list_lats_longs, 'chrome-extension://'+chrome.runtime.id+'/popup.html');
+      //Clears the curent route id selected and sets the list of lats and longitudes
       chrome.storage.sync.set({"route_id_selected":''}, function() {
       });
     }
@@ -304,37 +307,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         return getLatandLog(res,route_id);
       }).catch(error => console.log("reAuthorize error",error));
     }
-    
-    
-    //Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
-    //Returns and puts a view of the street in a div
-    //All the street view divs are appended as children to another div
-    //Return the name of the class that stores the street view divs
-    function getStreetViews(list_lats_longs){
-      for (let i = 0; i < list_lats_longs.length; i++){
-        //Create a div location to store the Google Street View Info
-        var current_div = document.createElement("div");
-        var id_name = "slidestreet" + i;
-        current_div.setAttribute("class","course_preview_slideshow");
-        current_div.setAttribute("id",id_name);
-        //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
-        var global_div = document.getElementById('slideshow-container');
-        global_div.appendChild(current_div);
-        //Calls the Google Street View and puts the info in the div
-        //Google Street View API takes in a latitude and longitude --> returns a div for every request
-        new google.maps.StreetViewPanorama(
-          current_div, {
-            position: list_lats_longs[i],
-            pov: {
-              heading: 165,
-              pitch: 1
-            }
-          });
-        }
-        ///All the Google Street View divs CAN BE RETREIVED BY CALLING
-        //  EX: ---> let slides = document.getElementsByClassName("slideshow-container);
-        return 'slideshow-container';
-      }
       
     }
     
