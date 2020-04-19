@@ -148,6 +148,7 @@ function getSpeedLimits(list_lats_longs) {
 
   }
 
+  console.log(global_div[0]);
   return 'slideshow-container';
 
 }
@@ -170,7 +171,13 @@ function getStreetViews(list_lats_longs){
     current_div.setAttribute("id",id_name);
     //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
     //var global_div = document.getElementsByClassName('slideshow-container');
-    global_div[0].appendChild(current_div);
+
+
+
+    //COMMENTING OUT FOR NOW AS THIS GIVES AN NULL ERROR OTHERWISE FOR SPEEDLIMITS (AS IT CHANGES THE SLIDES LIST)
+    //global_div[0].appendChild(current_div);
+
+
     //Calls the Google Street View and puts the info in the div
     //Google Street View API takes in a latitude and longitude --> returns a div for every request
     // new google.maps.StreetViewPanorama(

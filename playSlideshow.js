@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
         speeds[speedIndex-1].style.display = "block";
+        console.log(speeds[speedIndex-1]);
       }
 
     }
