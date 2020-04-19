@@ -114,18 +114,23 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
 
         //Action that takes place when we click the Course Preview Button
         assigned_button.onclick = function (){
-          //if the user has been authorized and has refresh token
-          if(sessionStorage.getItem("refresh_token").length > 1){
-            //user has been authorized -should be able to just use refresh token to display
-            //only need to use refresh token
-            console.log("User has been authorized");
-            const refresh_token = sessionStorage.getItem("refresh_token");//get refresh token
-            //Start for functionality of our project
-            initiateAuthorization(route_id, refresh_token);
-            //Show our popup;
-            surround_div.style.display = 'flex';
+          let authorized = false;
+          if (sessionStorage.getItem("refresh_token")){
+            //if the user has been authorized and has refresh token
+            if(sessionStorage.getItem("refresh_token").length > 1){
+              //user has been authorized -should be able to just use refresh token to display
+              //only need to use refresh token
+              console.log("User has been authorized");
+              authorized = true;
+              const refresh_token = sessionStorage.getItem("refresh_token");//get refresh token
+              //Start for functionality of our project
+              initiateAuthorization(route_id, refresh_token);
+              //Show our popup;
+              surround_div.style.display = 'flex';
 
-          } else {
+            }
+          }
+          if (!authorized){
             // User has not been authorized yet
             console.log("User not yet authorized");
             //user has not been authorized or dont have refresh token
@@ -242,8 +247,17 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
     //Redirect the user to strava's oauth page
     async function authorizeUser(route_id){
       const userAccess_value = sessionStorage.getItem("user_response_token");
+      let intialized_value = true;
+      if (!userAccess_value){
+        intialized_value = false;
+      }
+      else{
+        if (userAccess_value.length < 1){
+          intialized_value = false;
+        }
+      }
       //If the user's access has not already been given - go through oath flow
-      if (userAccess_value.length < 1){
+      if (!intialized_value){
         // user has not been authorized
         //Save route_id for sessionStorage for reauthorization
         sessionStorage.setItem("route_id_selected", route_id);
