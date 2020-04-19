@@ -8,6 +8,7 @@ window.addEventListener('message', event => {
     // Should only be sent from strava's domain after pressing a 'Course Preview' button
     if (event.origin.startsWith('https://www.strava.com')) {
         // The data was sent from strava
+        console.log('Use Data called');
         var global_div = document.getElementsByClassName('slideshow-container');
         // Latitudes and longitudes stored in event.data
         executeDisplay(event.data);
@@ -26,7 +27,7 @@ function executeDisplay(list_lats_longs){
   //Suggestion: API for Google StreetView
   getStreetViews(list_lats_longs);
   //get the speed limits
-  getSpeedLimits(list_lats_longs);
+  //getSpeedLimits(list_lats_longs);
 }
 
 //get the speed limits which takes in the list of latitudes and longitudes
@@ -145,10 +146,9 @@ function getSpeedLimits(list_lats_longs) {
 
     global_div[0].appendChild(current_div);
 
-    return 'slideshow-container';
-
   }
 
+  return 'slideshow-container';
 
 }
 

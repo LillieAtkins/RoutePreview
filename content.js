@@ -272,7 +272,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Clears the curent route id selected and sets the list of lats and longitudes
       chrome.storage.sync.set({"route_id_selected":''}, function() {
       });
-
     }
 
     //Retrieves the latitudes and longitudes of the route id given
@@ -321,7 +320,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
   else if (window.location.href.includes("oauth")){
 
   }
-
   //Run this functionality when users are sent to the redirect page after authorizing
   else if (window.location.href.includes("www.google.com")){
     // we want to extract the auth token with the read_all access from the url
