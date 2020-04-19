@@ -89,6 +89,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         let route_id = null;
         assigned_button = btn.cloneNode(true);
         assigned_button.setAttribute("id","course_preview_btn"+button_index);
+        console.log(assigned_button);
         before_content[button_index].appendChild(assigned_button);
 
         // Extract the route id
