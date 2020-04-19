@@ -203,10 +203,10 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
              },
 
              body: JSON.stringify({
-                client_id: 'xxxxx',
-                client_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                refresh_token: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                grant_type: 'refresh_token'
+               client_id: '44955',
+              client_secret: '5579411a2bb89908341e9a0defe536ce9a9768b8',
+              refresh_token: '08b186a3ae69e8c916c93a3d547790b818682080',
+              grant_type: 'refresh_token'
              })
          })
          .then(res => {
@@ -253,20 +253,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'){
     //If something goes wrong
   }
 }
-
-//get the speed limits which takes in the list of latitudes and longitudes
-function getSpeedLimits(list_lats_longs) {
-  path = "";
-
-  for (let i = 0; i < list_lats_longs.length; i++){
-    path += "|" + list_lats_longs[i][0]; //create the parameters to send google maps
-
-  }
-  
-  //create the call
-  "https://roads.googleapis.com/v1/speedLimits?parameters&key=YOUR_API_KEY"
-}
-
 
 //Run this functionality when on the strava's authorization page
 else if (window.location.href.includes("oauth")){
