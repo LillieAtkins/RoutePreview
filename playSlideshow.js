@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+
     var slideIndex = 0;
     var speedIndex = 0;
+
     var slideInterval = setInterval(nextSlide,2000);
     var slides = document.getElementsByClassName("course_preview_slideshow");
     var speeds = document.getElementsByClassName("speedlimit");
