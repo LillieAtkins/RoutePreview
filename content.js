@@ -13,8 +13,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       })
     })
   }
-  
-  
+
+
   //loads the user refresh token -> if it hasn't been set then just loads empty string
   async function loadUserRefreshToken() {
     await new Promise(resolve => {
@@ -26,7 +26,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       })
     })
   }
-  
+
   //Prevents other pages from giving errors when trying to invoke our functions
   try {
     //If the document body has loaded - display our button
@@ -34,7 +34,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Display the Course Preview Button
       loadUserResponseToken();
       loadUserRefreshToken();
-      
+
       let before_content;
       var btn = document.createElement("BUTTON");
       //Run this if we are on a expanded route page
@@ -78,7 +78,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         btn.style.left =3;
         btn.style.top = 0;
       }
-      
+
       btn.innerHTML = "Course Preview";
       btn.setAttribute("class","course_preview_class");
       //Create a course preview button for each route
@@ -90,7 +90,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         assigned_button = btn.cloneNode(true);
         assigned_button.setAttribute("id","course_preview_btn"+button_index);
         before_content[button_index].appendChild(assigned_button);
-        
+
         // Extract the route id
         //Expanded route page
         if (Number.isInteger(parseInt(window.location.href.charAt(window.location.href.length-1)))){
@@ -110,7 +110,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
           //Extract the actual route_id
           route_id = route_id_holder.href.substring(30, route_id_holder.href.length );
         }
-        
+
         //Action that takes place when we click the Course Preview Button
         assigned_button.onclick = function (){
           //if the user has been authorized and has refresh token
@@ -123,7 +123,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
             initiateAuthorization(route_id, refresh_token);
             //Show our popup;
             surround_div.style.display = 'flex';
-            
+
           } else {
             // User has not been authorized yet
             console.log("User not yet authorized");
@@ -133,7 +133,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         }
         button_index++;
       }
-      
+
       //Displays our Popup from the popup.html file
       let popup_area;
       //Expanded route-specific page
@@ -152,8 +152,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       object.width = 400;
       object.style.objectFit = 'cover';
       object.setAttribute("id","course_preview_object");
-      
-      
+
+
       //Creates the exit icon that allows the user to exit the popup
       const exit_icon = document.createElement('a');
       exit_icon.innerHTML = 'Exit';
@@ -164,7 +164,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       exit_icon.style.top = '21%';
       exit_icon.style.right = '31%';
       exit_icon.style.position = "absolute";
-      
+
       //Creates the expand icon that determines what size the popup should appear
       const expand_icon = document.createElement('a');
       expand_icon.innerHTML = 'Expand';
@@ -175,7 +175,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       expand_icon.style.top = '21%';
       expand_icon.style.right = '34%';
       expand_icon.style.position = "absolute";
-      
+
       //Expands and shrinks the popup when the expand/shrink link is clicked
       expand_icon.onclick = function(){
         if (object.width != '100%' && object.height != '100%'){
@@ -197,15 +197,15 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
           expand_icon.innerHTML = 'Expand';
         }
       }
-      
-      
+
+
       //Puts the object in the div
       surround_div.appendChild(object);
       //Places the expand icon in the div
       surround_div.appendChild(expand_icon);
       //Places the exit icon in the div
       surround_div.appendChild(exit_icon);
-      
+
       surround_div.style.position = "fixed";
       surround_div.style.zIndex = 9000;
       surround_div.style.textAlign = 'center';
@@ -220,7 +220,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       popup_area[0].appendChild(surround_div);
       //Hide the popup until after the user clicks on the course_preview button
       surround_div.style.display = 'none';
-      
+
       //Exit the popup when the user clicks the exit button
       exit_icon.onclick = function(){
         //Reset the popup size to original smaller size
@@ -233,10 +233,10 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         expand_icon.innerHTML = 'Expand';
         surround_div.style.display = 'none';
       }
-      
-      
+
+
     }
-    
+
     //If we have not received user access token from the user
     //Redirect the user to strava's oauth page
     async function authorizeUser(route_id){
@@ -251,15 +251,15 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         window.location.replace(auth_link);
       }
     }
-    
+
     //Reauthorizes the user and retrieves the longitudes and latitudes
     //of the route id given (user must already be previously authorized)
     async function initiateAuthorization(route_id, refresh_token){
       // trial_token is the refresh token we get from passing in the auth token
       await reAuthorize_next(route_id, refresh_token).then(res =>res).catch(error => console.log("reAuthorize lat lng error",error));
-      
+
     }
-    
+
     //Get the speed limits based on the latitude and longitude pairs given
     //Make a Google Street View div for every latitude and longitude pair given
     function displayPreview(list_lats_longs){
@@ -272,8 +272,9 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Clears the curent route id selected and sets the list of lats and longitudes
       chrome.storage.sync.set({"route_id_selected":''}, function() {
       });
+
     }
-    
+
     //Retrieves the latitudes and longitudes of the route id given
     // Returns the latitudes and longitudes
     async function getLatandLog(res, route_id){
@@ -287,7 +288,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         return result[0].data;
       }).catch(error => console.log("getLatandLog error \n",error));
     }
-    
+
     //This reauthorizes (uses refresh token to get new auth token) , calls
     //getLatandLog with the new auth token which then returns the lat lng array
     async function reAuthorize_next(route_id, trial_token){
@@ -297,7 +298,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         headers:{
           'Accept': 'application/json, text/plain, */*',
           'Content-Type': 'application/json'
-          
+
         }
       }).then(res => {
         //Get the Promise
@@ -307,18 +308,18 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         return getLatandLog(res,route_id);
       }).catch(error => console.log("reAuthorize error",error));
     }
-      
+
     }
-    
+
     catch (err){
       console.log(err);
       //If something goes wrong
     }
   }
-  
+
   //Run this functionality when on the strava's authorization page
   else if (window.location.href.includes("oauth")){
-    
+
   }
 
   //Run this functionality when users are sent to the redirect page after authorizing
@@ -331,16 +332,16 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
     // we can then use this code to get our refresh token
     //set the user response token to be used in the future -> later set to session storage
     chrome.storage.local.set({'user_response_token': code});
-    
+
     // this gets us the refresh token
     getRefreshToken(code);
-    
+
     // This sets the users refresh token
     async function getRefreshToken(userAccess_value){
       // this gets us the refresh token
       const trial_token = await reAuthorize(userAccess_value).then(res => res); // this is what should only be done once
     }
-    
+
     // we use reAuth to get the refresh token that we eventually use to get auth token to get latlng
     async function reAuthorize(user_access_value){
       const fetch_access_link = "https://course-preview-s20.herokuapp.com/user_access_token/" + user_access_value;
@@ -365,6 +366,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         return refresh_token;
       }).catch(error => console.log("reAuthorize error",error));
     }
-    
-    
+
+
   }
