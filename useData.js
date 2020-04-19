@@ -27,7 +27,7 @@ function executeDisplay(list_lats_longs){
   //Suggestion: API for Google StreetView
   getStreetViews(list_lats_longs);
   //get the speed limits
-  //getSpeedLimits(list_lats_longs);
+  getSpeedLimits(list_lats_longs);
 }
 
 //get the speed limits which takes in the list of latitudes and longitudes

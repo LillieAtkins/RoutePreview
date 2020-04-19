@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
-        //speeds[i].style.display = "none";
+        speeds[i].style.display = "none";
       }
       slideIndex++;
       speedIndex++;
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
-        //speeds[speedIndex-1].style.display = "block";
+        speeds[speedIndex-1].style.display = "block";
       }
 
     }
@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function showSlide(){
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
-        //speeds[i].style.display = "none";
+        speeds[i].style.display = "none";
       }
 
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
-        //speeds[speedIndex-1].style.display = "block";
+        speeds[speedIndex-1].style.display = "block";
       }
 
     }
