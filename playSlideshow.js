@@ -2,7 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var slideInterval = setInterval(nextSlide,2000);
     var slides = document.getElementsByClassName("course_preview_slideshow");
-    var speeds = document.getElementsByClassName("speedlimit");
+    console.log('slides:')
+    console.log(slides);
+    //var speeds = document.getElementsByClassName("speedlimit");
+    //console.log(speeds);
     nextSlide();
 
     function nextSlide(){
@@ -10,13 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
-        speeds[i].style.display = "none";
+        //speeds[i].style.display = "none";
       }
       slideIndex++;
       speedIndex++;
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
-        speeds[speedIndex-1].style.display = "block";
+        //speeds[speedIndex-1].style.display = "block";
       }
 
     }
@@ -24,13 +27,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function showSlide(){
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
-        speeds[i].style.display = "none";
+        //speeds[i].style.display = "none";
       }
 
       if(slideIndex <= slides.length) {
         slides[slideIndex-1].style.display = "block";
-        speeds[speedIndex-1].style.display = "block";
-        console.log(speeds[speedIndex-1]);
+        //speeds[speedIndex-1].style.display = "block";
+        //console.log(speeds[speedIndex-1]);
       }
 
     }

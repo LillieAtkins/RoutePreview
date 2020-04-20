@@ -24,10 +24,11 @@ function executeDisplay(list_lats_longs){
   //Resets slideshow back to first screen
   slideIndex = 0;
   speedIndex = 0;
-  //Suggestion: API for Google StreetView
-  getStreetViews(list_lats_longs);
   //get the speed limits
-  getSpeedLimits(list_lats_longs);
+  var speedlims = getSpeedLimits(list_lats_longs);
+  //Suggestion: API for Google StreetView
+  getStreetViews(list_lats_longs, speedlims);
+
 }
 
 //get the speed limits which takes in the list of latitudes and longitudes
@@ -40,6 +41,7 @@ function getSpeedLimits(list_lats_longs) {
 
   list_lats_longs_copy = list_lats_longs.slice();
 
+  //THIS IS FOR WHEN WE HAVE THE GOOGLE API AS WE CAN ONLY CALL SPEEDLIMITS IN BATCHES OF 100
   // if(stop > 1) {
   //   for(let i = 0; i < stop; i++) {
   //     path = list_lats_longs_copy[0];
@@ -126,30 +128,8 @@ function getSpeedLimits(list_lats_longs) {
   }];
 
   speedlimits = info[0]['speedLimits'];
-  console.log(speedlimits);
 
-  var global_div = document.getElementsByClassName('slideshow-container');
-  console.log(global_div);
-
-  for (let i = 0; i < speedlimits.length; i++){
-    //Create a div for the speed limit
-    var current_div = document.createElement("div");
-    var id_name = "speedlimit" + i;
-    current_div.setAttribute("class","speedlimit");
-    current_div.setAttribute("id",id_name);
-
-    let current_speed = speedlimits[i]['speedLimit'];
-    var speed = document.createTextNode(current_speed);
-    console.log(speed);
-    current_div.appendChild(speed);
-    console.log(current_div);
-
-    global_div[0].appendChild(current_div);
-
-  }
-
-  console.log(global_div[0]);
-  return 'slideshow-container';
+  return speedlimits;
 
 }
 
@@ -158,9 +138,9 @@ function getSpeedLimits(list_lats_longs) {
 //Returns and puts a view of the street in a div
 //All the street view divs are appended as children to another div
 //Return the name of the class that stores the street view divs
-function getStreetViews(list_lats_longs){
+function getStreetViews(list_lats_longs, speedLimits){
   var global_div = document.getElementsByClassName('slideshow-container');
-  for (let i = 0; i < list_lats_longs.length; i++){
+  for (let i = 0; i < 3; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
     //Reformats the array of latitude and longitude pairs to fit the format for Google Speed View
     // i.e. convert every pair to an object {lat:####,lng:####}
     let current_lat_lng_pair = {lat:list_lats_longs[i][[0]],lng:list_lats_longs[i][[1]]}
@@ -172,10 +152,24 @@ function getStreetViews(list_lats_longs){
     //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
     //var global_div = document.getElementsByClassName('slideshow-container');
 
+    var another_div = document.createElement("div");
+    var id_name = "speedlimit" + i;
+    another_div.setAttribute("class","text");
+    another_div.setAttribute("id",id_name);
 
+    let current_speed = speedLimits[i]['speedLimit'];
+    var speed = document.createTextNode(current_speed);
+    another_div.appendChild(speed);
+    current_div.appendChild(another_div);
+    let pictureName = "picture" + (i + 1) + ".png";
+    console.log(pictureName);
+    var picture_div = document.createElement("img");
+    picture_div.setAttribute("src", pictureName);
+    current_div.appendChild(picture_div);
 
-    //COMMENTING OUT FOR NOW AS THIS GIVES AN NULL ERROR OTHERWISE FOR SPEEDLIMITS (AS IT CHANGES THE SLIDES LIST)
-    //global_div[0].appendChild(current_div);
+    console.log("global div:");
+    console.log(global_div[0]);
+    global_div[0].appendChild(current_div);
 
 
     //Calls the Google Street View and puts the info in the div
