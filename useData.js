@@ -165,14 +165,18 @@ function getStreetViews(list_lats_longs, speedLimits){
     var id_name = "speedlimit" + i;
     another_div.setAttribute("class","text");
     another_div.setAttribute("id",id_name);
+    another_div.style.border = "thick solid #FFFFFF";
+    another_div.style.color = "#FFFFFF";
+    another_div.style.display = "inline-block";
     let current_speed = speedLimits[i]['speedLimit'];
-    var speed = document.createTextNode(current_speed);
+    var speed = document.createTextNode("Speed\nLimit\n" + current_speed);
     another_div.appendChild(speed);
     current_div.appendChild(another_div);
 
     //add the picture
     let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
+    picture_div.style.display = "inline-block";
     picture_div.setAttribute("src", pictureName);
     current_div.appendChild(picture_div);
 

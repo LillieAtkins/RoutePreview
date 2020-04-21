@@ -71,6 +71,12 @@ body{
   z-index: 901;
 }
 
+.text
+{
+    white-space: pre-wrap;
+    float: right;
+}
+
 /* Position the "next button" to the right */
 .next {
   right: 0;

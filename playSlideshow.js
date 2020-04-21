@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function nextSlide(){
       var i;
-      console.log("SLIDES: ");
       console.log(slides);
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
