@@ -8,7 +8,6 @@ window.addEventListener('message', event => {
     // Should only be sent from strava's domain after pressing a 'Course Preview' button
     if (event.origin.startsWith('https://www.strava.com')) {
         // The data was sent from strava
-        console.log('Use Data called');
         var global_div = document.getElementsByClassName('slideshow-container');
         // Latitudes and longitudes stored in event.data
         executeDisplay(event.data);
@@ -37,7 +36,6 @@ function getSpeedLimits(list_lats_longs) {
   let info;
 
   let stop = Math.ceil(list_lats_longs.length/100);
-  console.log(stop);
 
   list_lats_longs_copy = list_lats_longs.slice();
 
@@ -140,8 +138,17 @@ function getSpeedLimits(list_lats_longs) {
 //Return the name of the class that stores the street view divs
 function getStreetViews(list_lats_longs, speedLimits){
   var global_div = document.getElementsByClassName('slideshow-container');
+  //get rid of old slides that were added for other slideshows
+  let old = document.getElementsByClassName('course_preview_slideshow');
+
+  if(old.length !== 0) {
+    while(old[0]) {
+      old[0].remove();
+    }
+  }
+
   for (let i = 0; i < 3; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
-    
+
     //Reformats the array of latitude and longitude pairs to fit the format for Google Speed View
     // i.e. convert every pair to an object {lat:####,lng:####}
     let current_lat_lng_pair = {lat:list_lats_longs[i][[0]],lng:list_lats_longs[i][[1]]}
@@ -165,13 +172,10 @@ function getStreetViews(list_lats_longs, speedLimits){
 
     //add the picture
     let pictureName = "picture" + (i + 1) + ".png";
-    console.log(pictureName);
     var picture_div = document.createElement("img");
     picture_div.setAttribute("src", pictureName);
     current_div.appendChild(picture_div);
 
-    console.log("global div:");
-    console.log(global_div[0]);
     global_div[0].appendChild(current_div);
 
 

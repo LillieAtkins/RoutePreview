@@ -89,7 +89,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         let route_id = null;
         assigned_button = btn.cloneNode(true);
         assigned_button.setAttribute("id","course_preview_btn"+button_index);
-        console.log(assigned_button);
         before_content[button_index].appendChild(assigned_button);
 
         // Extract the route id
@@ -279,7 +278,6 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
     //Make a Google Street View div for every latitude and longitude pair given
     function displayPreview(list_lats_longs){
       //Suggestion: API for Google StreetView
-      console.log(list_lats_longs);
       //Sends the latitudes and longitudes to the popup.html javascript page to work to
       //get the speed limits and street views
       var course_preview_iframe = document.getElementById('course_preview_object');
