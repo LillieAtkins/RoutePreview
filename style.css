@@ -17,6 +17,15 @@ body{
   margin: auto;
 }
 
+.controls {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
 .slideshow-container {
   align-self: center;
   margin: auto;
@@ -50,8 +59,8 @@ body{
 }
 
 .course_preview_slideshow img {
-    width:100%;
-    height:100%;
+    width:95%;
+    height:80%;
 }
 
 /* Next & previous buttons */
@@ -75,6 +84,7 @@ body{
 {
     white-space: pre-wrap;
     float: right;
+    padding: 10px;
 }
 
 /* Position the "next button" to the right */

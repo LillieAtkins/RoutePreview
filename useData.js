@@ -168,6 +168,7 @@ function getStreetViews(list_lats_longs, speedLimits){
     another_div.style.border = "thick solid #FFFFFF";
     another_div.style.color = "#FFFFFF";
     another_div.style.display = "inline-block";
+    
     let current_speed = speedLimits[i]['speedLimit'];
     var speed = document.createTextNode("Speed\nLimit\n" + current_speed);
     another_div.appendChild(speed);
