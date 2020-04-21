@@ -141,6 +141,7 @@ function getSpeedLimits(list_lats_longs) {
 function getStreetViews(list_lats_longs, speedLimits){
   var global_div = document.getElementsByClassName('slideshow-container');
   for (let i = 0; i < 3; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
+    
     //Reformats the array of latitude and longitude pairs to fit the format for Google Speed View
     // i.e. convert every pair to an object {lat:####,lng:####}
     let current_lat_lng_pair = {lat:list_lats_longs[i][[0]],lng:list_lats_longs[i][[1]]}
@@ -152,15 +153,17 @@ function getStreetViews(list_lats_longs, speedLimits){
     //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
     //var global_div = document.getElementsByClassName('slideshow-container');
 
+    //add the speed limit
     var another_div = document.createElement("div");
     var id_name = "speedlimit" + i;
     another_div.setAttribute("class","text");
     another_div.setAttribute("id",id_name);
-
     let current_speed = speedLimits[i]['speedLimit'];
     var speed = document.createTextNode(current_speed);
     another_div.appendChild(speed);
     current_div.appendChild(another_div);
+
+    //add the picture
     let pictureName = "picture" + (i + 1) + ".png";
     console.log(pictureName);
     var picture_div = document.createElement("img");
