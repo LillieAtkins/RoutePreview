@@ -39,6 +39,7 @@ function getSpeedLimits(list_lats_longs) {
 
   list_lats_longs_copy = list_lats_longs.slice();
 
+  let speedlimit = "";
   //THIS IS FOR WHEN WE HAVE THE GOOGLE API AS WE CAN ONLY CALL SPEEDLIMITS IN BATCHES OF 100
   // if(stop > 1) {
   //   for(let i = 0; i < stop; i++) {
@@ -56,23 +57,16 @@ function getSpeedLimits(list_lats_longs) {
   //       console.log(err);
   //     })
   //
+  //     for(let j = 0; j < info.length; j++) {
+  //       speedlimits += info[0]['speedLimits'];
+  //     }
   //     list_lats_longs_copy = list_lats_longs_copy.splice(0, 100);
   //
   //   }
   // }
-  // path = list_lats_longs_copy[0];
-  // for (let i = 1; i < list_lats_longs_copy.length; i++){
-  //   path += "|" + list_lats_longs_copy[i]; //create the parameters to send google maps
-  // }
 
-  // info = fetch(`https://roads.googleapis.com/v1/speedLimits?path=${path}&key=AIzaSyBX779m3-lWL6JONrBososCVSySr3rPsJM`).then( response => {
-  //   if (!response.ok) { throw response }
-  //   return response.json()  //we only get here if there is no error
-  // })
-  // .catch( err => {
-  //   console.log(err);
-  // })
 
+//this is for the sample data can delete when using the api
   info = [{
     speedLimits:
     [
@@ -126,6 +120,7 @@ function getSpeedLimits(list_lats_longs) {
   }];
 
   speedlimits = info[0]['speedLimits'];
+  //end of sample code
 
   return speedlimits;
 
@@ -168,8 +163,14 @@ function getStreetViews(list_lats_longs, speedLimits){
     another_div.style.border = "thick solid #FFFFFF";
     another_div.style.color = "#FFFFFF";
     another_div.style.display = "inline-block";
-    
+
     let current_speed = speedLimits[i]['speedLimit'];
+
+    //no speed limit returned for this lat / long
+    if(!current_speed) {
+      curernt_speed = '-';
+    }
+
     var speed = document.createTextNode("Speed\nLimit\n" + current_speed);
     another_div.appendChild(speed);
     current_div.appendChild(another_div);
