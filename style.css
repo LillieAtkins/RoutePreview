@@ -18,12 +18,26 @@ body{
 }
 
 .controls {
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.8);
   border: none;
   color: white;
-  padding: 12px;
   font-size: 16px;
   cursor: pointer;
+  align-content: center;
+}
+
+#reset {
+  position: absolute;
+  bottom: 2px;
+  margin-right: 70%;
+  margin-left: 10%;
+}
+
+#pause {
+  position: absolute;
+  bottom: 2px;
+  margin-left: 20px;
+  margin-right: 200px;
 }
 
 .slideshow-container {

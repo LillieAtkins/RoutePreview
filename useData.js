@@ -162,7 +162,7 @@ function getStreetViews(list_lats_longs, speedLimits){
     another_div.setAttribute("id",id_name);
     another_div.style.border = "thick solid #FFFFFF";
     another_div.style.color = "#FFFFFF";
-    another_div.style.display = "inline-block";
+    another_div.style.display = "inline";
 
     let current_speed = speedLimits[i]['speedLimit'];
 
@@ -178,7 +178,7 @@ function getStreetViews(list_lats_longs, speedLimits){
     //add the picture
     let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
-    picture_div.style.display = "inline-block";
+    picture_div.style.display = "inline";
     picture_div.setAttribute("src", pictureName);
     current_div.appendChild(picture_div);
 
