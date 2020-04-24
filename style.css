@@ -17,13 +17,36 @@ body{
   margin: auto;
 }
 
+.controls {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  align-content: center;
+}
+
+#reset {
+  position: absolute;
+  bottom: 2px;
+  margin-right: 70%;
+  margin-left: 10%;
+}
+
+#pause {
+  position: absolute;
+  bottom: 2px;
+  margin-left: 20px;
+  margin-right: 200px;
+}
+
 .slideshow-container {
   align-self: center;
   margin: auto;
   transition-duration: 0.9s;
   cursor: pointer;
   width:100%;
-  height:100%;
+  height:80%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,7 +59,7 @@ body{
   text-align: center;
   margin: auto;
   width: 90%;
-  height: 85%;
+  height: 100%;
 }
 
 .course_preview_slideshow {
@@ -50,8 +73,9 @@ body{
 }
 
 .course_preview_slideshow img {
-    width:100%;
-    height:100%;
+    width:95%;
+    height:80%;
+    padding:10px;
 }
 
 /* Next & previous buttons */
@@ -69,6 +93,13 @@ body{
   border-radius: 0 3px 3px 0;
   user-select: none;
   z-index: 901;
+}
+
+.text
+{
+    white-space: pre-wrap;
+    float: right;
+    padding: 10px;
 }
 
 /* Position the "next button" to the right */

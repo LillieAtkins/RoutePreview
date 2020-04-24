@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function nextSlide(){
       var i;
-
+      console.log(slides);
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
       }
@@ -44,34 +44,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resetButton.onclick = function(){
       slideIndex = 0;
+      playing = true;
     };
 
     var nextButton = document.getElementById("forward");
 
     nextButton.onclick = function(){
       pauseSlideshow();
-      console.log('next button called');
       if(slideIndex < slides.length) {
         slideIndex = slideIndex + 1;
       } else {
         slideIndex = 1;
       }
-      console.log(slideIndex);
-      showSlide(slideIndex);
+      showSlide();
     };
 
     var prevButton = document.getElementById("backward");
 
     prevButton.onclick = function(){
       pauseSlideshow();
-      console.log('prev button called');
       if(slideIndex > 1) {
         slideIndex = slideIndex - 1;
       } else {
         slideIndex = slides.length;
       }
-      console.log(slideIndex);
-      showSlide(slideIndex);
+      showSlide();
     };
 
     function pauseSlideshow(){
