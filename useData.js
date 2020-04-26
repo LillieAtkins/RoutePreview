@@ -25,8 +25,8 @@ function executeDisplay(list_lats_longs){
   speedIndex = 0;
   //get the speed limits
   var speedlims = getSpeedLimits(list_lats_longs);
-  //Suggestion: API for Google StreetView
-  getStreetViews(list_lats_longs, speedlims);
+  //make the slideshow with street views and speedlimtits
+  makePreview(list_lats_longs, speedlims);
 
 }
 
@@ -127,13 +127,15 @@ function getSpeedLimits(list_lats_longs) {
 }
 
 
-//Takes in a list of the "lat" and "lng" objects and calls the Google Street View API on the objects
-//Returns and puts a view of the street in a div
-//All the street view divs are appended as children to another div
-//Return the name of the class that stores the street view divs
-function getStreetViews(list_lats_longs, speedLimits){
+//Takes in a list of the "lat" and "lng" objects and speedlimits
+//Calls the Google Street View API on the lat/lng objects
+//  Google Street View API returns and puts a view of the street in a div
+//All the street view divs and speed limits are appended as children to another div
+//Make new div for each lat / lng and return the name of the class that stores the overall div
+function makePreview(list_lats_longs, speedLimits){
+  //slideshow-container will be the div that stores all the divs returned from the Google Street View and Google Speed Limit API
   var global_div = document.getElementsByClassName('slideshow-container');
-  //get rid of old slides that were added for other slideshows
+  //get rid of old slides that were added for the prior slideshow
   let old = document.getElementsByClassName('course_preview_slideshow');
 
   if(old.length !== 0) {
@@ -148,55 +150,58 @@ function getStreetViews(list_lats_longs, speedLimits){
     // i.e. convert every pair to an object {lat:####,lng:####}
     let current_lat_lng_pair = {lat:list_lats_longs[i][[0]],lng:list_lats_longs[i][[1]]}
     //Create a div location to store the Google Street View Info
-    var current_div = document.createElement("div");
+    var container_div = document.createElement("div");
     var id_name = "slidestreet" + i;
-    current_div.setAttribute("class","course_preview_slideshow");
-    current_div.setAttribute("id",id_name);
-    //FINAL_LOCATION will be the div that stores all the divs returned from the Google Street View
-    //var global_div = document.getElementsByClassName('slideshow-container');
+    container_div.setAttribute("id",id_name);
+    container_div.setAttribute("class","course_preview_slideshow");
 
-    //add the speed limit
-    var another_div = document.createElement("div");
+    //add the speed limit div
+    var speed_div = document.createElement("div");
     var id_name = "speedlimit" + i;
-    another_div.setAttribute("class","text");
-    another_div.setAttribute("id",id_name);
-    another_div.style.border = "thick solid #FFFFFF";
-    another_div.style.color = "#FFFFFF";
-    another_div.style.display = "inline";
-
+    speed_div.setAttribute("id",id_name);
+    speed_div.setAttribute("class","speedlimit_div");
+    //Get speed limit a lat / long
     let current_speed = speedLimits[i]['speedLimit'];
 
     //no speed limit returned for this lat / long
     if(!current_speed) {
-      curernt_speed = '-';
+      current_speed = '-';
     }
+    //Add the speed limit text to the speed limit div
+    speed_div.innerHTML = (`<div class="speed_limit_inner"><strong class="speed_limit_text">SPEED\nLIMIT\n</strong><strong class="speed_limit_number">${current_speed}</strong></div>`);
+    //Add speed limit to container div
+    container_div.appendChild(speed_div);
 
-    var speed = document.createTextNode("Speed\nLimit\n" + current_speed);
-    another_div.appendChild(speed);
-    current_div.appendChild(another_div);
-
-    //add the picture
+    //add the test picture
     let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
-    picture_div.style.display = "inline";
+    picture_div.setAttribute('class','course_preview_street');
     picture_div.setAttribute("src", pictureName);
-    current_div.appendChild(picture_div);
+    //Add street view image to the div with speed limit
+    container_div.appendChild(picture_div);
+    //Add the div containing the street view and speed limit
+    global_div[0].appendChild(container_div);
 
-    global_div[0].appendChild(current_div);
-
-
-    //Calls the Google Street View and puts the info in the div
-    //Google Street View API takes in a latitude and longitude --> returns a div for every request
-    // new google.maps.StreetViewPanorama(
-    //   current_div, {
-    //     position: current_lat_lng_pair,
-    //     pov: {
-    //       heading: 165,
-    //       pitch: 1
-    //     }
-    //   });
+    //Get the Street view
+    //let street_div = document.createElement('div');
+    //street_div.setAttribute('class','course_preview_street');
+    //getStreetView(current_lat_lng_pair,street_div);
     }
-    ///All the Google Street View divs CAN BE RETREIVED BY CALLING
+    ///All the container view divs can be retreived by calling:
     //  EX: ---> let slides = document.getElementsByClassName("slideshow-container");
     return 'slideshow-container';
   }
+
+  // Calls the Google Street View and puts the info in the div
+  // Google Street View API takes in a latitude and longitude --> returns a div for every request
+  function getStreetView(current_lat_lng_pair,street_div){
+    new google.maps.StreetViewPanorama(
+      street_div, {
+        position: current_lat_lng_pair,
+        pov: {
+          heading: 165,
+          pitch: 1
+        }
+      });
+  }
+
