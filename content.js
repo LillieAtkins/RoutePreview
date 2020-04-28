@@ -164,7 +164,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       exit_icon.innerHTML = 'Exit';
       exit_icon.style.zIndex = 9002;
       exit_icon.style.textDecoration = "none";
-      exit_icon.style.color = "white";
+      exit_icon.style.color = "black";
       //Put the expand icon in the right corner of the popup html
       exit_icon.style.top = '21%';
       exit_icon.style.right = '31%';
@@ -175,7 +175,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       expand_icon.innerHTML = 'Expand';
       expand_icon.style.zIndex = 9002;
       expand_icon.style.textDecoration = "none";
-      expand_icon.style.color = "white";
+      expand_icon.style.color = "black";
       //Put the expand icon in the right corner of the popup html
       expand_icon.style.top = '21%';
       expand_icon.style.right = '34%';
