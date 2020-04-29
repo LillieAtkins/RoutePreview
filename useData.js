@@ -11,10 +11,24 @@ window.addEventListener('message', event => {
         var global_div = document.getElementsByClassName('slideshow-container');
         // Latitudes and longitudes stored in event.data
         executeDisplay(event.data);
+
     } else {
       //Unknown and uncleared site - return and do nothing
         return;
     }
+});
+
+//Waits for the screen to load to send messages to content.js about the mouse moving
+//to show the navigation tools (exit and expand/compress icons)
+window.addEventListener('load', function () {
+  //If the mouse is caught moving - send message to content.js so that navigation
+  //tools appear on the screen
+  window.addEventListener('mousemove',function(){
+    chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+      var activeTab = tabs[0];
+      chrome.tabs.sendMessage(activeTab.id, {"message": "showTools"});
+    });
+  });
 });
 
 //Get the speed limits based on the latitude and longitude pairs given
@@ -136,13 +150,7 @@ function makePreview(list_lats_longs, speedLimits){
   //slideshow-container will be the div that stores all the divs returned from the Google Street View and Google Speed Limit API
   var global_div = document.getElementsByClassName('slideshow-container');
   //get rid of old slides that were added for the prior slideshow
-  let old = document.getElementsByClassName('course_preview_slideshow');
-
-  if(old.length !== 0) {
-    while(old[0]) {
-      old[0].remove();
-    }
-  }
+  global_div[0].innerHTML = "";
 
   for (let i = 0; i < 3; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
 
@@ -153,7 +161,7 @@ function makePreview(list_lats_longs, speedLimits){
     var container_div = document.createElement("div");
     var id_name = "slidestreet" + i;
     container_div.setAttribute("id",id_name);
-    container_div.setAttribute("class","course_preview_slideshow");
+    container_div.setAttribute("class","route_preview_slideshow");
 
     //add the speed limit div
     var speed_div = document.createElement("div");
@@ -175,7 +183,7 @@ function makePreview(list_lats_longs, speedLimits){
     //add the test picture
     let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
-    picture_div.setAttribute('class','course_preview_street');
+    picture_div.setAttribute('class','route_preview_street');
     picture_div.setAttribute("src", pictureName);
     //Add street view image to the div with speed limit
     container_div.appendChild(picture_div);
@@ -183,9 +191,11 @@ function makePreview(list_lats_longs, speedLimits){
     global_div[0].appendChild(container_div);
 
     //Get the Street view
-    //let street_div = document.createElement('div');
-    //street_div.setAttribute('class','course_preview_street');
-    //getStreetView(current_lat_lng_pair,street_div);
+    // let street_div = document.createElement('div');
+    // street_div.setAttribute('class','route_preview_street');
+    // container_div.appendChild(street_div);
+    // global_div[0].appendChild(container_div);
+    // getStreetView(current_lat_lng_pair,street_div);
     }
     ///All the container view divs can be retreived by calling:
     //  EX: ---> let slides = document.getElementsByClassName("slideshow-container");
@@ -204,4 +214,3 @@ function makePreview(list_lats_longs, speedLimits){
         }
       });
   }
-
