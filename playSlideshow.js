@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
       }
-      slideIndex++;
-      if(slideIndex <= slides.length) {
+      if(slideIndex < slides.length) {
+        slideIndex++;
         slides[slideIndex-1].style.display = "block";
       }
 
@@ -42,8 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var resetButton = document.getElementById("reset");
 
     resetButton.onclick = function(){
+      pauseSlideshow();
       slideIndex = 0;
       playing = true;
+      playSlideshow();
     };
 
     var nextButton = document.getElementById("forward");
