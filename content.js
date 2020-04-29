@@ -79,8 +79,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         btn.style.top = 0;
       }
 
-      btn.innerHTML = "Course Preview";
-      btn.setAttribute("class","course_preview_class");
+      btn.innerHTML = "Route Preview";
+      btn.setAttribute("class","route_preview_class");
       //Create a course preview button for each route
       let button_index = 0;
       while (button_index < before_content.length){
@@ -88,7 +88,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         let assigned_button = null;
         let route_id = null;
         assigned_button = btn.cloneNode(true);
-        assigned_button.setAttribute("id","course_preview_btn"+button_index);
+        assigned_button.setAttribute("id","route_preview_btn"+button_index);
         before_content[button_index].appendChild(assigned_button);
 
         // Extract the route id
@@ -156,60 +156,88 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       object.height = 350;
       object.width = 400;
       object.style.objectFit = 'cover';
-      object.setAttribute("id","course_preview_object");
+      object.style.border = 'none';
+      object.setAttribute("id","route_preview_object");
 
+      //Inserts the stylesheet so that the expand and exit icons appear
+      var icon_stylesheet = document.createElement('link');
+      icon_stylesheet.rel = "stylesheet";
+      icon_stylesheet.href =" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
+      document.head.appendChild(icon_stylesheet);
+
+      //Creates the navigation buttons container that holds the exit and expand/compress icons
+      let navigation_buttons_div = document.createElement('div');
+      //Styles the icons to show in the middle of the popup
+      navigation_buttons_div.style.background = 'rgba(15,14,14,0.7)';
+      navigation_buttons_div.style.zIndex = 9002;
+      navigation_buttons_div.style.color = "#FE5200";
+      navigation_buttons_div.style.position = "absolute";
+      navigation_buttons_div.style.fontSize = '20px';
+      navigation_buttons_div.style.borderRadius = "5px";
+      navigation_buttons_div.style.top = '45%';
+      navigation_buttons_div.style.right = '47%';
+      navigation_buttons_div.style.padding = '4px 8px';
+      navigation_buttons_div.style.display= 'none';
 
       //Creates the exit icon that allows the user to exit the popup
-      const exit_icon = document.createElement('a');
-      exit_icon.innerHTML = 'Exit';
-      exit_icon.style.zIndex = 9002;
-      exit_icon.style.textDecoration = "none";
-      exit_icon.style.color = "black";
-      //Put the expand icon in the right corner of the popup html
-      exit_icon.style.top = '21%';
-      exit_icon.style.right = '31%';
-      exit_icon.style.position = "absolute";
+      const exit_icon = document.createElement('i');
+      exit_icon.title = "Exit";
+      //Put the expand icon in the center of the popup html
+      exit_icon.style.display = 'inline';
+      exit_icon.style.marginLeft = '4px';
+      //Get the actual icon from font-awesome
+      exit_icon.setAttribute('class',"fa fa-times-circle");
+      exit_icon.setAttribute('id','exit_popup_cp');
 
-      //Creates the expand icon that determines what size the popup should appear
-      const expand_icon = document.createElement('a');
-      expand_icon.innerHTML = 'Expand';
-      expand_icon.style.zIndex = 9002;
-      expand_icon.style.textDecoration = "none";
-      expand_icon.style.color = "black";
-      //Put the expand icon in the right corner of the popup html
-      expand_icon.style.top = '21%';
-      expand_icon.style.right = '34%';
-      expand_icon.style.position = "absolute";
+      //Creates the expand/compress icon that determines what size the popup should appear
+      const expand_compress_icon = document.createElement('i');
+      expand_compress_icon.title = 'Expand';
+      //Put the expand/compress icon in the center of the popup html
+      expand_compress_icon.style.display = 'inline';
+      expand_compress_icon.style.marginRight = '4px';
+      //Get the actual icon from font-awesome
+      expand_compress_icon.setAttribute('class',"fa fa-expand");
+      expand_compress_icon.setAttribute('id','expand_shrink_popup_cp');
 
-      //Expands and shrinks the popup when the expand/shrink link is clicked
-      expand_icon.onclick = function(){
-        if (object.width != '100%' && object.height != '100%'){
+      //Timeout counts how long to show expand/compress icon and exit icon
+      var hide_timeout;
+      //Expands and compresses the popup when the expand/compress link is clicked
+      expand_compress_icon.onclick = function(){
+        //Expand popup window size
+        if (object.width == 400 && object.height == 350 ){
+          //Clear the timeout so expand/compress icon and exit icon show
+          if (hide_timeout){
+              clearTimeout(hide_timeout);
+          }
           object.width = '100%';
           object.height = '100%';
-          exit_icon.style.top = '2%';
-          exit_icon.style.right = '2%';
-          expand_icon.style.top = '2%';
-          expand_icon.style.right = '5%';
-          expand_icon.innerHTML = 'Shrink';
+          //Put the navigation buttons to the top right corner
+          navigation_buttons_div.style.background= 'transparent';
+          navigation_buttons_div.style.top= '2%';
+          navigation_buttons_div.style.right= '2%';
+          navigation_buttons_div.style.display= 'block';
+          //Change expand icon to compress icon
+          expand_compress_icon.title = 'Compress';
+          expand_compress_icon.setAttribute('class',"fa fa-compress");
+          //Goes to complete full screen on the window
+          if (document.documentElement.webkitRequestFullScreen){
+            document.documentElement.webkitRequestFullScreen();
+            surround_div.style.background = 'black';
+          };
         }
+        //Compress popup window size
         else{
-          object.height = 350;
-          object.width = 400;
-          exit_icon.style.top = '21%';
-          exit_icon.style.right = '31%';
-          expand_icon.style.top = '21%';
-          expand_icon.style.right = '34%';
-          expand_icon.innerHTML = 'Expand';
+          resetPopupSize();
         }
       }
-
-
+      //Places the expand icon in the navigation buttons div
+      navigation_buttons_div.appendChild(expand_compress_icon);
+      //Places the exit icon in the navigation buttons div
+      navigation_buttons_div.appendChild(exit_icon);
       //Puts the object in the div
       surround_div.appendChild(object);
-      //Places the expand icon in the div
-      surround_div.appendChild(expand_icon);
-      //Places the exit icon in the div
-      surround_div.appendChild(exit_icon);
+      //Places navigation buttons in the div;
+      surround_div.appendChild(navigation_buttons_div);
 
       surround_div.style.position = "fixed";
       surround_div.style.zIndex = 9000;
@@ -228,19 +256,62 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
 
       //Exit the popup when the user clicks the exit button
       exit_icon.onclick = function(){
-        //Reset the popup size to original smaller size
-        object.height = 350;
-        object.width = 400;
-        exit_icon.style.top = '21%';
-        exit_icon.style.right = '31%';
-        expand_icon.style.top = '21%';
-        expand_icon.style.right = '34%';
-        expand_icon.innerHTML = 'Expand';
+        //Reset the popup window size to original smaller size
+        resetPopupSize();
         surround_div.style.display = 'none';
       }
 
+      //Reset the popup window size to original smaller size
+      function resetPopupSize(){
+        object.height = 350;
+        object.width = 400;
+        //Centers the navigation buttons to the middle of the screen
+        navigation_buttons_div.style.top = '45%';
+        navigation_buttons_div.style.right = '47%';
+        navigation_buttons_div.style.background = 'rgba(15,14,14,0.7)';
+        //Change compress icon to expand icon
+        expand_compress_icon.title = 'Expand';
+        expand_compress_icon.setAttribute('class',"fa fa-expand");
+        //Exits full screen mode in window
+        if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+          surround_div.style.background = 'rgba(255,255,255,.6)';
+        }
+      }
+      //Listening for the mouse moving messages from useData.js so that the
+      //navigation tools properly display and appear when the user is looking for them
+      chrome.runtime.onMessage.addListener(
+      function(request, sender, sendResponse) {
+        if( request.message === "showTools" ) {
+          //Shows the navigation buttons for a short window unless the mouse
+          //is moved again
+          displayVideoTools();
+          }
+      }
+    );
+
+    //Display the navigation tools for set amount of time before making them
+    //disappear again
+    //If the mouse was moved again during timeout count - reset the count down
+    //so that the navigation remain appear
+    function displayVideoTools(){
+      //Show the navigation buttons
+      navigation_buttons_div.style.display = 'block';
+      if (object.width == 400 && object.height == 350){
+        // If mouse is moved while counting down - clear and reset timeout
+        if (hide_timeout){
+            clearTimeout(hide_timeout);
+        }
+        //After timeout, hide navigation buttons again
+        hide_timeout = setTimeout(function(){
+          navigation_buttons_div.style.display = 'none';
+        },1000);
+      }
+    }
 
     }
+
+
 
     //If we have not received user access token from the user
     //Redirect the user to strava's oauth page
@@ -280,8 +351,8 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Suggestion: API for Google StreetView
       //Sends the latitudes and longitudes to the popup.html javascript page to work to
       //get the speed limits and street views
-      var course_preview_iframe = document.getElementById('course_preview_object');
-      course_preview_iframe.contentWindow.postMessage(list_lats_longs, 'chrome-extension://'+chrome.runtime.id+'/popup.html');
+      var route_preview_iframe = document.getElementById('route_preview_object');
+      route_preview_iframe.contentWindow.postMessage(list_lats_longs, 'chrome-extension://'+chrome.runtime.id+'/popup.html');
       //Clears the curent route id selected and sets the list of lats and longitudes
       chrome.storage.sync.set({"route_id_selected":''}, function() {
       });

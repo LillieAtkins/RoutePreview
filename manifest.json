@@ -1,5 +1,5 @@
 {
-  "name":"course_preview",
+  "name":"RoutePreview",
   "version":"1.0",
   "description": "Displays a video of the route created",
   "manifest_version":2,
@@ -22,15 +22,15 @@
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/course_preview_icon.png",
-      "24": "icons/course_preview_icon.png",
-      "32": "icons/course_preview_icon.png"
+      "16": "icons/route_preview_icon.png",
+      "24": "icons/route_preview_icon.png",
+      "32": "icons/route_preview_icon.png"
     },
-    "default_title":"Course Preview"
+    "default_title":"RoutePreview"
   },
   "icons":{
-    "16": "icons/course_preview_icon.png",
-    "24": "icons/course_preview_icon.png",
-    "32": "icons/course_preview_icon.png"
+    "16": "icons/route_preview_icon.png",
+    "24": "icons/route_preview_icon.png",
+    "32": "icons/route_preview_icon.png"
   }
 }

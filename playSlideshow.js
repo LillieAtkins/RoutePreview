@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     var slideInterval = setInterval(nextSlide,2000);
-    var slides = document.getElementsByClassName("course_preview_slideshow");
+    var slides = document.getElementsByClassName("route_preview_slideshow");
     nextSlide();
 
     function nextSlide(){
@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
       for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
       }
-      slideIndex++;
-      if(slideIndex <= slides.length) {
+      if(slideIndex < slides.length) {
+        slideIndex++;
         slides[slideIndex-1].style.display = "block";
       }
 
@@ -42,8 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var resetButton = document.getElementById("reset");
 
     resetButton.onclick = function(){
+      pauseSlideshow();
       slideIndex = 0;
       playing = true;
+      playSlideshow();
     };
 
     var nextButton = document.getElementById("forward");
