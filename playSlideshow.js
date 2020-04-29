@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     var slideInterval = setInterval(nextSlide,2000);
-    var slides = document.getElementsByClassName("course_preview_slideshow");
+    var slides = document.getElementsByClassName("route_preview_slideshow");
     nextSlide();
 
     function nextSlide(){
