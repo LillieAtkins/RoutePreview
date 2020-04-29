@@ -1,6 +1,6 @@
 {
-  "name":"course_preview",
-  "version":"1.0",
+  "name":"RoutePreview",
+  "version":"3.0",
   "description": "Displays a video of the route created",
   "manifest_version":2,
   "permissions": [ "declarativeContent", "tabs", "activeTab", "storage", "https://course-preview-s20.herokuapp.com/*"],
