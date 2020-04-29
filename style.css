@@ -38,7 +38,7 @@ body{
   text-align: center;
 }
 
-#course_preview_popup {
+#route_preview_popup {
   align-self: center;
   align-content: center;
   text-align: center;
@@ -47,7 +47,7 @@ body{
   height: 100%;
 }
 
-.course_preview_slideshow,.course_preview_street {
+.route_preview_slideshow,.route_preview_street {
     margin: auto;
     display:none;
     align-self: center;
@@ -56,13 +56,13 @@ body{
     height: 85%;
 }
 
-.course_preview_street {
+.route_preview_street {
   display: block;
   position: relative;
   height: 100%;
 }
 
-.course_preview_street img {
+.route_preview_street img {
   object-fit: fill;
   max-width: 100%;
   max-height: 100%;
@@ -118,7 +118,7 @@ body{
   z-index: 901;
 }
 
-.course_preview_buttons {
+.route_preview_buttons {
   display: inline;
   width: 100%;
   position: absolute;
