@@ -80,7 +80,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       }
 
       btn.innerHTML = "Route Preview";
-      btn.setAttribute("class","course_preview_class");
+      btn.setAttribute("class","route_preview_class");
       //Create a course preview button for each route
       let button_index = 0;
       while (button_index < before_content.length){
@@ -88,7 +88,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         let assigned_button = null;
         let route_id = null;
         assigned_button = btn.cloneNode(true);
-        assigned_button.setAttribute("id","course_preview_btn"+button_index);
+        assigned_button.setAttribute("id","route_preview_btn"+button_index);
         before_content[button_index].appendChild(assigned_button);
 
         // Extract the route id
@@ -157,7 +157,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       object.width = 400;
       object.style.objectFit = 'cover';
       object.style.border = 'none';
-      object.setAttribute("id","course_preview_object");
+      object.setAttribute("id","route_preview_object");
 
       //Inserts the stylesheet so that the expand and exit icons appear
       var icon_stylesheet = document.createElement('link');
@@ -351,7 +351,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Suggestion: API for Google StreetView
       //Sends the latitudes and longitudes to the popup.html javascript page to work to
       //get the speed limits and street views
-      var route_preview_iframe = document.getElementById('course_preview_object');
+      var route_preview_iframe = document.getElementById('route_preview_object');
       route_preview_iframe.contentWindow.postMessage(list_lats_longs, 'chrome-extension://'+chrome.runtime.id+'/popup.html');
       //Clears the curent route id selected and sets the list of lats and longitudes
       chrome.storage.sync.set({"route_id_selected":''}, function() {
