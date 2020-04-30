@@ -152,11 +152,26 @@ function makePreview(list_lats_longs, speedLimits){
   //get rid of old slides that were added for the prior slideshow
   global_div[0].innerHTML = "";
 
-  for (let i = 0; i < 3; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
+  for (let i = 0; i < list_lats_longs.length; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
 
-    //Reformats the array of latitude and longitude pairs to fit the format for Google Speed View
+    //console.log(list_lats_longs.length)
+    //Reformats the array of latitude and longitude pairs to fit the format for Google Street View
     // i.e. convert every pair to an object {lat:####,lng:####}
     let current_lat_lng_pair = {lat:list_lats_longs[i][[0]],lng:list_lats_longs[i][[1]]}
+
+    //set bearing to 165 as default
+    let bearing = 165;
+    // if we are not at the end of the lat lng list
+    // this doesn't seem to always make the heading perfect but I think that is more due to what the api
+    // returns because it did help
+    if(i !=(list_lats_longs.length -1)){
+      let future_lat_lng_pair = {lat:list_lats_longs[i + 1][[0]],lng:list_lats_longs[i + 1][[1]]}
+      bearing = getBearing(future_lat_lng_pair, current_lat_lng_pair);
+    }
+
+
+
+
     //Create a div location to store the Google Street View Info
     var container_div = document.createElement("div");
     var id_name = "slidestreet" + i;
@@ -165,11 +180,17 @@ function makePreview(list_lats_longs, speedLimits){
 
     //add the speed limit div
     var speed_div = document.createElement("div");
-    var id_name = "speedlimit" + i;
+    //var id_name = "speedlimit" + i;
+
+    //changing some speed limit stuff quickly for street view testing
+    var id_name = "speedlimit" + 1;
+
+
     speed_div.setAttribute("id",id_name);
     speed_div.setAttribute("class","speedlimit_div");
     //Get speed limit a lat / long
-    let current_speed = speedLimits[i]['speedLimit'];
+    //let current_speed = speedLimits[i]['speedLimit'];       // CHANGE THIS HARD CODING
+    let current_speed = speedLimits[1]['speedLimit'];
 
     //no speed limit returned for this lat / long
     if(!current_speed) {
@@ -184,11 +205,22 @@ function makePreview(list_lats_longs, speedLimits){
     let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
     picture_div.setAttribute('class','route_preview_street');
-    picture_div.setAttribute("src", pictureName);
+    //picture_div.setAttribute("src", pictureName);
+
+    getStaticStreetView(current_lat_lng_pair,picture_div, bearing);
+
     //Add street view image to the div with speed limit
     container_div.appendChild(picture_div);
     //Add the div containing the street view and speed limit
     global_div[0].appendChild(container_div);
+
+    // let street_div = document.createElement("img");
+    // street_div.setAttribute('class','route_preview_street');
+    // container_div.appendChild(street_div);
+    // global_div[0].appendChild(container_div);
+
+
+
 
     //Get the Street view
     // let street_div = document.createElement('div');
@@ -213,4 +245,41 @@ function makePreview(list_lats_longs, speedLimits){
           pitch: 1
         }
       });
+  }
+
+
+  function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
+    const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
+    fetch(fetch_refresh_link).then(res=>{
+      street_div.setAttribute("src", res["url"]);
+      //street_div = res;
+      //return res;
+    }).catch(error => console.log("street view",error));
+  }
+
+
+  // function getSpeedLimit(current_lat_lng_pair){
+  //   const fetch_refresh_link = `https://roads.googleapis.com/v1/speedLimits?path=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&key=APIKEY`;
+  //   fetch(fetch_refresh_link).then(res=>{
+  //     //Get the object return from the Promise
+  //     //return res;
+  //   }).catch(error => console.log("street view",error));
+  // }
+
+// formula from https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
+  function getBearing(upcoming_lat_lng, current_lat_lng){
+    const curr_lat = current_lat_lng["lat"];
+    const curr_lng = current_lat_lng["lng"];
+    const future_lat = upcoming_lat_lng["lat"];
+    const future_lng = upcoming_lat_lng["lng"];
+
+    const x = Math.cos(future_lat) * Math.sin(future_lng - curr_lng);
+    const y = Math.cos(curr_lat) * Math.sin(future_lat) - Math.sin(curr_lat) * Math.cos(future_lat) * Math.cos(future_lng - curr_lng);
+
+    const bearing_radians = Math.atan2(x, y);
+
+    const bearing_degrees = bearing_radians * (180/ Math.PI);
+
+    return(bearing_degrees);
+
   }
