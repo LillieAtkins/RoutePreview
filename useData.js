@@ -63,7 +63,7 @@ function getSpeedLimits(list_lats_longs) {
   //     }
   //
   //     //can only fetch 100 at a time
-  //     info = fetch(`https://roads.googleapis.com/v1/speedLimits?path=${path}&key=AIzaSyBX779m3-lWL6JONrBososCVSySr3rPsJM`).then( response => {
+  //     info = fetch(`https://roads.googleapis.com/v1/speedLimits?path=${path}&key=APIKEY`).then( response => {
   //       if (!response.ok) { throw response }
   //       return response.json()  //we only get here if there is no error
   //     })
@@ -146,11 +146,35 @@ function getSpeedLimits(list_lats_longs) {
 //  Google Street View API returns and puts a view of the street in a div
 //All the street view divs and speed limits are appended as children to another div
 //Make new div for each lat / lng and return the name of the class that stores the overall div
-function makePreview(list_lats_longs, speedLimits){
+async function makePreview(list_lats_longs_original, speedLimits){
   //slideshow-container will be the div that stores all the divs returned from the Google Street View and Google Speed Limit API
   var global_div = document.getElementsByClassName('slideshow-container');
   //get rid of old slides that were added for the prior slideshow
   global_div[0].innerHTML = "";
+  let list_lats_longs = list_lats_longs_original;
+  let newListLatLongs = [];
+  if(list_lats_longs_original.length > 200){     //hardcode 250 for now but can change this depending on our preference/length of slides
+    newListLatLongs = await filterListLatLngs(list_lats_longs).then(res => res);
+    console.log("NEW LIST LAT LONGS");
+    console.log(newListLatLongs);
+    //now if newListLatLongs is longer than 0 -> so we want to use it, use that instead of list_lats_longs_original
+    list_lats_longs = newListLatLongs;
+    //another condition to further narrow down the list if still too long
+    if(list_lats_longs.length > 150){      //choose what length would be the threshold
+      let newSpacedList = [list_lats_longs[0]];
+      for(let i=0; i < list_lats_longs.length; i++){
+         //go through the list of lat lngs and check the distance between them
+         for(let j = i; j <list_lats_longs.length; j++){
+           if(distanceBetweenLatLng(list_lats_longs[i], list_lats_longs[j]) > 400){
+             newSpacedList.push(list_lats_longs[j]);
+             i = j;  //update i
+           }
+         }
+       }
+       console.log("newSpacedList ", newSpacedList);
+      list_lats_longs = newSpacedList;
+    }
+  }
 
   for (let i = 0; i < list_lats_longs.length; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
 
@@ -283,3 +307,49 @@ function makePreview(list_lats_longs, speedLimits){
     return(bearing_degrees);
 
   }
+
+
+//filter to only lat lng values that have a returned image
+async function filterListLatLngs(listLatLongs){
+    let newListLatLongs = listLatLongs.map(x => {
+      const fetch_link = `https://maps.googleapis.com/maps/api/streetview/metadata?size=400x400&location=${x[0]},${x[1]}&fov=90&pitch=0&key=APIKEY`;
+      return fetch(fetch_link).then(res=>{
+        return res.json();
+      }).then(data => {
+        if(data["status"] == "OK"){
+          return(x);
+        }
+      }
+      )}
+    );
+    return(Promise.all(newListLatLongs).then(results => results.filter(x => x!= undefined)));
+
+  }
+
+//Use haversine formula
+//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+function distanceBetweenLatLng(currentPair, futurePair){
+  const lat1 = currentPair[0];
+  const lon1 = currentPair[1];
+  const lat2 = futurePair[0];
+  const lon2 = futurePair[1];
+
+  const lat_dif = lat2 -lat1;
+  const lng_dif = lon2 - lon1;
+
+  const dLat = lat_dif* (Math.PI/180);
+  const dLon = lng_dif * (Math.PI/180);
+
+
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1* (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  var R = 6371; //km
+  const d = R * c * 1000; // to get it into meters
+
+  return(d);
+
+}
