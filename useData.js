@@ -273,11 +273,11 @@ async function makePreview(list_lats_longs_original, speedLimits){
 
 
   function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
-    const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
+    //const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
+    const fetch_refresh_link = "https://course-preview-s20.herokuapp.com/static_street_view/latitude="+current_lat_lng_pair.lat+"&longitude="+current_lat_lng_pair.lng+"&heading="+bearing;
     fetch(fetch_refresh_link).then(res=>{
       street_div.setAttribute("src", res["url"]);
-      //street_div = res;
-      //return res;
+
     }).catch(error => console.log("street view",error));
   }
 
@@ -312,7 +312,7 @@ async function makePreview(list_lats_longs_original, speedLimits){
 //filter to only lat lng values that have a returned image
 async function filterListLatLngs(listLatLongs){
     let newListLatLongs = listLatLongs.map(x => {
-      const fetch_link = `https://maps.googleapis.com/maps/api/streetview/metadata?size=400x400&location=${x[0]},${x[1]}&fov=90&pitch=0&key=APIKEY`;
+      const fetch_link = "https://course-preview-s20.herokuapp.com/static_street_metadata/latitude="+x[0]+"&longitude="+x[1];
       return fetch(fetch_link).then(res=>{
         return res.json();
       }).then(data => {
