@@ -44,6 +44,7 @@ function executeDisplay(list_lats_longs){
 
 }
 
+//If we hearback from Google Sales
 //get the speed limits which takes in the list of latitudes and longitudes
 function getSpeedLimits(list_lats_longs) {
   let path;
@@ -153,10 +154,8 @@ async function makePreview(list_lats_longs_original, speedLimits){
   global_div[0].innerHTML = "";
   let list_lats_longs = list_lats_longs_original;
   let newListLatLongs = [];
-  if(list_lats_longs_original.length > 200){     //hardcode 250 for now but can change this depending on our preference/length of slides
+  if(list_lats_longs_original.length > 200){     //hardcode 200 for now but can change this depending on our preference/length of slides
     newListLatLongs = await filterListLatLngs(list_lats_longs).then(res => res);
-    console.log("NEW LIST LAT LONGS");
-    console.log(newListLatLongs);
     //now if newListLatLongs is longer than 0 -> so we want to use it, use that instead of list_lats_longs_original
     list_lats_longs = newListLatLongs;
     //another condition to further narrow down the list if still too long
@@ -165,14 +164,15 @@ async function makePreview(list_lats_longs_original, speedLimits){
       for(let i=0; i < list_lats_longs.length; i++){
          //go through the list of lat lngs and check the distance between them
          for(let j = i; j <list_lats_longs.length; j++){
+           //chose 400 meters as cut off distance between two points because long enough to narrow down list but not too long
+           // to miss out on valuable insights
            if(distanceBetweenLatLng(list_lats_longs[i], list_lats_longs[j]) > 400){
              newSpacedList.push(list_lats_longs[j]);
              i = j;  //update i
            }
          }
        }
-       console.log("newSpacedList ", newSpacedList);
-      list_lats_longs = newSpacedList;
+      list_lats_longs = newSpacedList; //set to new spaced list because now we want to use that
     }
   }
 
@@ -213,10 +213,10 @@ async function makePreview(list_lats_longs_original, speedLimits){
     speed_div.setAttribute("id",id_name);
     speed_div.setAttribute("class","speedlimit_div");
     //Get speed limit a lat / long
-    //let current_speed = speedLimits[i]['speedLimit'];       // CHANGE THIS HARD CODING
-    let current_speed = speedLimits[1]['speedLimit'];
+    //let current_speed = speedLimits[i]['speedLimit'];       // Hardcoding because we can't connect to Google Roads API yet
+    let current_speed = speedLimits[1]['speedLimit'];         // this just shows how a speed limit would be displayed
 
-    //no speed limit returned for this lat / long
+    //no speed limit returned for this lat / long -> this will become relevant if we can use roads API
     if(!current_speed) {
       current_speed = '-';
     }
@@ -225,63 +225,40 @@ async function makePreview(list_lats_longs_original, speedLimits){
     //Add speed limit to container div
     container_div.appendChild(speed_div);
 
-    //add the test picture
-    let pictureName = "picture" + (i + 1) + ".png";
     var picture_div = document.createElement("img");
     picture_div.setAttribute('class','route_preview_street');
-    //picture_div.setAttribute("src", pictureName);
 
-    getStaticStreetView(current_lat_lng_pair,picture_div, bearing);
+    //set src of picture_div
+    getStaticStreetView(current_lat_lng_pair, picture_div, bearing);
 
     //Add street view image to the div with speed limit
     container_div.appendChild(picture_div);
     //Add the div containing the street view and speed limit
     global_div[0].appendChild(container_div);
 
-    // let street_div = document.createElement("img");
-    // street_div.setAttribute('class','route_preview_street');
-    // container_div.appendChild(street_div);
-    // global_div[0].appendChild(container_div);
-
-
-
-
-    //Get the Street view
-    // let street_div = document.createElement('div');
-    // street_div.setAttribute('class','route_preview_street');
-    // container_div.appendChild(street_div);
-    // global_div[0].appendChild(container_div);
-    // getStreetView(current_lat_lng_pair,street_div);
     }
     ///All the container view divs can be retreived by calling:
     //  EX: ---> let slides = document.getElementsByClassName("slideshow-container");
     return 'slideshow-container';
   }
 
-  // Calls the Google Street View and puts the info in the div
-  // Google Street View API takes in a latitude and longitude --> returns a div for every request
-  function getStreetView(current_lat_lng_pair,street_div){
-    new google.maps.StreetViewPanorama(
-      street_div, {
-        position: current_lat_lng_pair,
-        pov: {
-          heading: 165,
-          pitch: 1
-        }
-      });
-  }
 
 
-  function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
-    //const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
-    const fetch_refresh_link = "https://course-preview-s20.herokuapp.com/static_street_view/latitude="+current_lat_lng_pair.lat+"&longitude="+current_lat_lng_pair.lng+"&heading="+bearing;
-    fetch(fetch_refresh_link).then(res=>{
-      street_div.setAttribute("src", res["url"]);
+//Calls the Google StreetView API with a latitude and longitude and bearing and sets the div with the returned image
+function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
+  //const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
+  const fetch_refresh_link = "https://course-preview-s20.herokuapp.com/static_street_view/latitude="+current_lat_lng_pair.lat+"&longitude="+current_lat_lng_pair.lng+"&heading="+bearing;
+  fetch(fetch_refresh_link).then(res=>{
 
-    }).catch(error => console.log("street view",error));
-  }
+    return(res.json());
+
+  }).then(res => {
+    street_div.setAttribute("src", "data:image/png;base64, " + res.image);
+  }).catch(error => console.log("street view",error));
+}
 
 
+// If we hear back from Google Sales we could maybe get this up and running
   // function getSpeedLimit(current_lat_lng_pair){
   //   const fetch_refresh_link = `https://roads.googleapis.com/v1/speedLimits?path=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&key=APIKEY`;
   //   fetch(fetch_refresh_link).then(res=>{
@@ -291,25 +268,25 @@ async function makePreview(list_lats_longs_original, speedLimits){
   // }
 
 // formula from https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
-  function getBearing(upcoming_lat_lng, current_lat_lng){
-    const curr_lat = current_lat_lng["lat"];
-    const curr_lng = current_lat_lng["lng"];
-    const future_lat = upcoming_lat_lng["lat"];
-    const future_lng = upcoming_lat_lng["lng"];
+function getBearing(upcoming_lat_lng, current_lat_lng){
+  const curr_lat = current_lat_lng["lat"];
+  const curr_lng = current_lat_lng["lng"];
+  const future_lat = upcoming_lat_lng["lat"];
+  const future_lng = upcoming_lat_lng["lng"];
 
-    const x = Math.cos(future_lat) * Math.sin(future_lng - curr_lng);
-    const y = Math.cos(curr_lat) * Math.sin(future_lat) - Math.sin(curr_lat) * Math.cos(future_lat) * Math.cos(future_lng - curr_lng);
+  const x = Math.cos(future_lat) * Math.sin(future_lng - curr_lng);
+  const y = Math.cos(curr_lat) * Math.sin(future_lat) - Math.sin(curr_lat) * Math.cos(future_lat) * Math.cos(future_lng - curr_lng);
 
-    const bearing_radians = Math.atan2(x, y);
+  const bearing_radians = Math.atan2(x, y);
 
-    const bearing_degrees = bearing_radians * (180/ Math.PI);
+  const bearing_degrees = bearing_radians * (180/ Math.PI);
 
-    return(bearing_degrees);
+  return(bearing_degrees);
 
-  }
+}
 
 
-//filter to only lat lng values that have a returned image
+//filter to only lat lng values that have a returned image if latitude longitude stream is long
 async function filterListLatLngs(listLatLongs){
     let newListLatLongs = listLatLongs.map(x => {
       const fetch_link = "https://course-preview-s20.herokuapp.com/static_street_metadata/latitude="+x[0]+"&longitude="+x[1];
