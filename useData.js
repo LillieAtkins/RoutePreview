@@ -1,5 +1,6 @@
 let slideIndex = 0;
 let speedIndex = 0;
+let playing = true;
 //Listens for messages from the content.js file
 //The message will attach the array of latitudes and longitudes which we will use
 //to the extract the street views and speed limits
@@ -18,16 +19,36 @@ window.addEventListener('message', event => {
     }
 });
 
+//Stores the timeout that determines how the mouse should appear
+let slider_show_timeout;
 //Waits for the screen to load to send messages to content.js about the mouse moving
 //to show the navigation tools (exit and expand/compress icons)
 window.addEventListener('load', function () {
-  //If the mouse is caught moving - send message to content.js so that navigation
-  //tools appear on the screen
   window.addEventListener('mousemove',function(){
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-      var activeTab = tabs[0];
-      chrome.tabs.sendMessage(activeTab.id, {"message": "showTools"});
-    });
+    //When the mouse moves show the slideshow slider and progress bar
+    let slideshow_view_slider = document.getElementById('slider_div');
+    //Show the slideshow for a fixed amount of time then hide it
+    if (slideshow_view_slider){
+      slideshow_view_slider.style.opacity = ".9";
+      slideshow_view_slider.style.transition ="opacity .4s";
+      //Clear the previous timeout if the user moves mouse again
+      if (slider_show_timeout){
+        clearTimeout(slider_show_timeout);
+      }
+      //(Re)start countdown to not showing the slideshow slider and progress bar
+      slider_show_timeout = setTimeout(function(){
+        slideshow_view_slider.style.opacity = '0';
+      },1000);
+    }
+    //If the mouse is caught moving - send message to content.js so that navigation
+    //tools appear on the screen
+    try{
+      chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+        var activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, {"message": "showTools"});
+      })
+    }
+    catch(err){}
   });
 });
 
@@ -37,14 +58,13 @@ function executeDisplay(list_lats_longs){
   //Resets slideshow back to first screen
   slideIndex = 0;
   speedIndex = 0;
+  playing = true;
   //get the speed limits
   var speedlims = getSpeedLimits(list_lats_longs);
   //make the slideshow with street views and speedlimtits
   makePreview(list_lats_longs, speedlims);
-
 }
 
-//If we hearback from Google Sales
 //get the speed limits which takes in the list of latitudes and longitudes
 function getSpeedLimits(list_lats_longs) {
   let path;
@@ -64,7 +84,7 @@ function getSpeedLimits(list_lats_longs) {
   //     }
   //
   //     //can only fetch 100 at a time
-  //     info = fetch(`https://roads.googleapis.com/v1/speedLimits?path=${path}&key=APIKEY`).then( response => {
+  //     info = fetch(`https://roads.googleapis.com/v1/speedLimits?path=${path}&key=AIzaSyCvtwh3lo0AmC9qQZYOjkMhNQD0bpOtfYY`).then( response => {
   //       if (!response.ok) { throw response }
   //       return response.json()  //we only get here if there is no error
   //     })
@@ -141,7 +161,6 @@ function getSpeedLimits(list_lats_longs) {
 
 }
 
-
 //Takes in a list of the "lat" and "lng" objects and speedlimits
 //Calls the Google Street View API on the lat/lng objects
 //  Google Street View API returns and puts a view of the street in a div
@@ -175,7 +194,7 @@ async function makePreview(list_lats_longs_original, speedLimits){
       list_lats_longs = newSpacedList; //set to new spaced list because now we want to use that
     }
   }
-
+  let non_skipped_count = 0;
   for (let i = 0; i < list_lats_longs.length; i++){ //HARD CODING IN 3 BASED ON OUR SAMPLE DATA VS. list_lats_longs.length
 
     //console.log(list_lats_longs.length)
@@ -192,9 +211,6 @@ async function makePreview(list_lats_longs_original, speedLimits){
       let future_lat_lng_pair = {lat:list_lats_longs[i + 1][[0]],lng:list_lats_longs[i + 1][[1]]}
       bearing = getBearing(future_lat_lng_pair, current_lat_lng_pair);
     }
-
-
-
 
     //Create a div location to store the Google Street View Info
     var container_div = document.createElement("div");
@@ -235,98 +251,104 @@ async function makePreview(list_lats_longs_original, speedLimits){
     container_div.appendChild(picture_div);
     //Add the div containing the street view and speed limit
     global_div[0].appendChild(container_div);
+    non_skipped_count++;
 
+    }
+    //Resizes the route preview slider and progress bar so that it properly
+    //aligns with the number of frames in the video
+    let route_preview_slider = document.getElementById('slideshow_view_slider');
+    if (route_preview_slider){
+      route_preview_slider.max = non_skipped_count;
+      route_preview_slider.value = slideIndex;
     }
     ///All the container view divs can be retreived by calling:
     //  EX: ---> let slides = document.getElementsByClassName("slideshow-container");
     return 'slideshow-container';
   }
 
+  //Calls the Google StreetView API with a latitude and longitude and bearing and sets the div with the returned image
+  function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
+    //const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
+    const fetch_refresh_link = "https://course-preview-s20.herokuapp.com/static_street_view/latitude="+current_lat_lng_pair.lat+"&longitude="+current_lat_lng_pair.lng+"&heading="+bearing;
+    fetch(fetch_refresh_link).then(res=>{
+      //Returns the promise
+      return(res.json());
+    }).then(res => {
+      //Extract the data returne dfrom the promise and convert it into a image
+      street_div.setAttribute("src", "data:image/png;base64, " + res.image);
+    }).catch(error => console.log("street view",error));
+  }
 
 
-//Calls the Google StreetView API with a latitude and longitude and bearing and sets the div with the returned image
-function getStaticStreetView(current_lat_lng_pair,street_div, bearing){
-  //const fetch_refresh_link = `https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&fov=90&heading=${bearing}&pitch=0&key=APIKEY`;
-  const fetch_refresh_link = "https://course-preview-s20.herokuapp.com/static_street_view/latitude="+current_lat_lng_pair.lat+"&longitude="+current_lat_lng_pair.lng+"&heading="+bearing;
-  fetch(fetch_refresh_link).then(res=>{
+  // If we hear back from Google Sales we could maybe get this up and running
+    // function getSpeedLimit(current_lat_lng_pair){
+    //   const fetch_refresh_link = `https://roads.googleapis.com/v1/speedLimits?path=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&key=APIKEY`;
+    //   fetch(fetch_refresh_link).then(res=>{
+    //     //Get the object return from the Promise
+    //     //return res;
+    //   }).catch(error => console.log("street view",error));
+    // }
 
-    return(res.json());
+  // formula from https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
+  function getBearing(upcoming_lat_lng, current_lat_lng){
+    const curr_lat = current_lat_lng["lat"];
+    const curr_lng = current_lat_lng["lng"];
+    const future_lat = upcoming_lat_lng["lat"];
+    const future_lng = upcoming_lat_lng["lng"];
 
-  }).then(res => {
-    street_div.setAttribute("src", "data:image/png;base64, " + res.image);
-  }).catch(error => console.log("street view",error));
-}
+    const x = Math.cos(future_lat) * Math.sin(future_lng - curr_lng);
+    const y = Math.cos(curr_lat) * Math.sin(future_lat) - Math.sin(curr_lat) * Math.cos(future_lat) * Math.cos(future_lng - curr_lng);
 
+    const bearing_radians = Math.atan2(x, y);
 
-// If we hear back from Google Sales we could maybe get this up and running
-  // function getSpeedLimit(current_lat_lng_pair){
-  //   const fetch_refresh_link = `https://roads.googleapis.com/v1/speedLimits?path=${current_lat_lng_pair["lat"]},${current_lat_lng_pair["lng"]}&key=APIKEY`;
-  //   fetch(fetch_refresh_link).then(res=>{
-  //     //Get the object return from the Promise
-  //     //return res;
-  //   }).catch(error => console.log("street view",error));
-  // }
+    const bearing_degrees = bearing_radians * (180/ Math.PI);
 
-// formula from https://www.igismap.com/formula-to-find-bearing-or-heading-angle-between-two-points-latitude-longitude/
-function getBearing(upcoming_lat_lng, current_lat_lng){
-  const curr_lat = current_lat_lng["lat"];
-  const curr_lng = current_lat_lng["lng"];
-  const future_lat = upcoming_lat_lng["lat"];
-  const future_lng = upcoming_lat_lng["lng"];
-
-  const x = Math.cos(future_lat) * Math.sin(future_lng - curr_lng);
-  const y = Math.cos(curr_lat) * Math.sin(future_lat) - Math.sin(curr_lat) * Math.cos(future_lat) * Math.cos(future_lng - curr_lng);
-
-  const bearing_radians = Math.atan2(x, y);
-
-  const bearing_degrees = bearing_radians * (180/ Math.PI);
-
-  return(bearing_degrees);
-
-}
-
-
-//filter to only lat lng values that have a returned image if latitude longitude stream is long
-async function filterListLatLngs(listLatLongs){
-    let newListLatLongs = listLatLongs.map(x => {
-      const fetch_link = "https://course-preview-s20.herokuapp.com/static_street_metadata/latitude="+x[0]+"&longitude="+x[1];
-      return fetch(fetch_link).then(res=>{
-        return res.json();
-      }).then(data => {
-        if(data["status"] == "OK"){
-          return(x);
-        }
-      }
-      )}
-    );
-    return(Promise.all(newListLatLongs).then(results => results.filter(x => x!= undefined)));
+    return(bearing_degrees);
 
   }
 
-//Use haversine formula
-//https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-function distanceBetweenLatLng(currentPair, futurePair){
-  const lat1 = currentPair[0];
-  const lon1 = currentPair[1];
-  const lat2 = futurePair[0];
-  const lon2 = futurePair[1];
 
-  const lat_dif = lat2 -lat1;
-  const lng_dif = lon2 - lon1;
+  //filter to only lat lng values that have a returned image if latitude longitude stream is long
+  async function filterListLatLngs(listLatLongs){
+      let newListLatLongs = listLatLongs.map(x => {
+        const fetch_link = "https://course-preview-s20.herokuapp.com/static_street_metadata/latitude="+x[0]+"&longitude="+x[1];
+        return fetch(fetch_link).then(res=>{
+          return res.json();
+        }).then(data => {
+          if(data["status"] == "OK"){
+            return(x);
+          }
+        }
+        )}
+      );
+      return(Promise.all(newListLatLongs).then(results => results.filter(x => x!= undefined)));
 
-  const dLat = lat_dif* (Math.PI/180);
-  const dLon = lng_dif * (Math.PI/180);
+    }
+
+  //Use haversine formula
+  //https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+  function distanceBetweenLatLng(currentPair, futurePair){
+    const lat1 = currentPair[0];
+    const lon1 = currentPair[1];
+    const lat2 = futurePair[0];
+    const lon2 = futurePair[1];
+
+    const lat_dif = lat2 -lat1;
+    const lng_dif = lon2 - lon1;
+
+    const dLat = lat_dif* (Math.PI/180);
+    const dLon = lng_dif * (Math.PI/180);
 
 
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(lat1* (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1* (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-  var R = 6371; //km
-  const d = R * c * 1000; // to get it into meters
+    var R = 6371; //km
+    const d = R * c * 1000; // to get it into meters
 
-  return(d);
+    return(d);
 
-}
+  }
