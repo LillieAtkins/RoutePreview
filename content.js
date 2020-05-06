@@ -207,7 +207,7 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
         if (object.width == 400 && object.height == 350 ){
           //Clear the timeout so expand/compress icon and exit icon show
           if (hide_timeout){
-              clearTimeout(hide_timeout);
+            clearTimeout(hide_timeout);
           }
           object.width = '100%';
           object.height = '100%';
@@ -281,36 +281,35 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       //Listening for the mouse moving messages from useData.js so that the
       //navigation tools properly display and appear when the user is looking for them
       chrome.runtime.onMessage.addListener(
-      function(request, sender, sendResponse) {
-        if( request.message === "showTools" ) {
-          //Shows the navigation buttons for a short window unless the mouse
-          //is moved again
-          displayVideoTools();
+        function(request, sender, sendResponse) {
+          if( request.message === "showTools" ) {
+            //Shows the navigation buttons for a short window unless the mouse
+            //is moved again
+            displayVideoTools();
           }
-      }
-    );
-
-    //Display the navigation tools for set amount of time before making them
-    //disappear again
-    //If the mouse was moved again during timeout count - reset the count down
-    //so that the navigation remain appear
-    function displayVideoTools(){
-      //Show the navigation buttons
-      navigation_buttons_div.style.display = 'block';
-      if (object.width == 400 && object.height == 350){
-        // If mouse is moved while counting down - clear and reset timeout
-        if (hide_timeout){
-            clearTimeout(hide_timeout);
         }
-        //After timeout, hide navigation buttons again
-        hide_timeout = setTimeout(function(){
-          navigation_buttons_div.style.display = 'none';
-        },1000);
+      );
+
+      //Display the navigation tools for set amount of time before making them
+      //disappear again
+      //If the mouse was moved again during timeout count - reset the count down
+      //so that the navigation remain appear
+      function displayVideoTools(){
+        //Show the navigation buttons
+        navigation_buttons_div.style.display = 'block';
+        if (object.width == 400 && object.height == 350){
+          // If mouse is moved while counting down - clear and reset timeout
+          if (hide_timeout){
+            clearTimeout(hide_timeout);
+          }
+          //After timeout, hide navigation buttons again
+          hide_timeout = setTimeout(function(){
+            navigation_buttons_div.style.display = 'none';
+          },1000);
+        }
       }
-    }
 
     }
-
 
 
     //If we have not received user access token from the user
@@ -392,62 +391,61 @@ if (window.location.href=== 'https://www.strava.com/athlete/routes'||window.loca
       }).catch(error => console.log("reAuthorize error",error));
     }
 
-    }
-
-    catch (err){
-      console.log(err);
-      //If something goes wrong
-    }
   }
 
-  //Run this functionality when on the strava's authorization page
-  else if (window.location.href.includes("oauth")){
-
+  catch (err){
+    console.log(err);
+    //If something goes wrong
   }
-  //Run this functionality when users are sent to the redirect page after authorizing
-  else if (window.location.href.includes("www.google.com")){
-    // we want to extract the auth token with the read_all access from the url
-    const url_credentials = window.location.href;
-    const start_index = url_credentials.indexOf("code") + 5;
-    const end_index = url_credentials.indexOf("&scope");
-    const code = url_credentials.slice(start_index, end_index);
-    // we can then use this code to get our refresh token
-    //set the user response token to be used in the future -> later set to session storage
-    chrome.storage.local.set({'user_response_token': code});
+}
 
+//Run this functionality when on the strava's authorization page
+else if (window.location.href.includes("oauth")){
+
+}
+//Run this functionality when users are sent to the redirect page after authorizing
+else if (window.location.href.includes("www.google.com")){
+  // we want to extract the auth token with the read_all access from the url
+  const url_credentials = window.location.href;
+  const start_index = url_credentials.indexOf("code") + 5;
+  const end_index = url_credentials.indexOf("&scope");
+  const code = url_credentials.slice(start_index, end_index);
+  // we can then use this code to get our refresh token
+  //set the user response token to be used in the future -> later set to session storage
+  chrome.storage.local.set({'user_response_token': code});
+
+  // this gets us the refresh token
+  getRefreshToken(code);
+
+  // This sets the users refresh token
+  async function getRefreshToken(userAccess_value){
     // this gets us the refresh token
-    getRefreshToken(code);
-
-    // This sets the users refresh token
-    async function getRefreshToken(userAccess_value){
-      // this gets us the refresh token
-      const trial_token = await reAuthorize(userAccess_value).then(res => res); // this is what should only be done once
-    }
-
-    // we use reAuth to get the refresh token that we eventually use to get auth token to get latlng
-    async function reAuthorize(user_access_value){
-      const fetch_access_link = "https://course-preview-s20.herokuapp.com/user_access_token/" + user_access_value;
-      fetch(fetch_access_link,{
-        method: 'GET',
-        headers:{
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        }
-      }).then(res => {
-        //Get the Promise
-        return res.json();
-      }).then(rjson=>{
-        //Get the object return from the Promise
-        const refresh_token = rjson.refresh_token;
-        chrome.storage.local.set({'refresh_token': refresh_token});
-        // here we could set the user_response_token to '' because it will eventually expire --> are there any
-        // code consequences / dependencies rn?
-        chrome.storage.local.set({'user_response_token': ''});
-        sessionStorage.setItem("user_response_token", '');
-        window.location.replace('https://www.strava.com/athlete/routes');
-        return refresh_token;
-      }).catch(error => console.log("reAuthorize error",error));
-    }
-
-
+    const trial_token = await reAuthorize(userAccess_value).then(res => res); // this is what should only be done once
   }
+
+  // we use reAuth to get the refresh token that we eventually use to get auth token to get latlng
+  async function reAuthorize(user_access_value){
+    const fetch_access_link = "https://course-preview-s20.herokuapp.com/user_access_token/" + user_access_value;
+    fetch(fetch_access_link,{
+      method: 'GET',
+      headers:{
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      //Get the Promise
+      return res.json();
+    }).then(rjson=>{
+      //Get the object return from the Promise
+      const refresh_token = rjson.refresh_token;
+      chrome.storage.local.set({'refresh_token': refresh_token});
+      // here we could set the user_response_token to '' because it will eventually expire --> are there any
+      // code consequences / dependencies rn?
+      chrome.storage.local.set({'user_response_token': ''});
+      sessionStorage.setItem("user_response_token", '');
+      window.location.replace('https://www.strava.com/athlete/routes');
+      return refresh_token;
+    }).catch(error => console.log("reAuthorize error",error));
+  }
+
+}
